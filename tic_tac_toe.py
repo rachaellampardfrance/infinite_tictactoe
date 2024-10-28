@@ -13,24 +13,24 @@ def main():
 
     # choose player marker
     player = player_mark()
-    # place player marker
-    game_list[user_place('row')][user_place('column')] = player
+    # get input from the user and check placement validity
+    game_list = valid_user_placement(game_list, player)
     # print current game board
     game_board(game_list)
 
 
 def player_mark():
-    """Player can choose bettween
+    """Player can choose between
     defined X or O marker"""
     mark = ' '
     while not mark in ['X', 'O']:
-        mark = input("Choose X or O").strip().upper()
+        mark = input("Choose X or O: ").strip().upper()
         if not mark in ['X', 'O']:
-            print(f"{mark} is not a vaild input") 
+            print(f"{mark} is not a valid input") 
     return mark
 
 
-def user_place(location):
+def user_place_choice(location):
     """Player can choose placement location
     by row and column"""
 
@@ -56,7 +56,20 @@ def user_place(location):
         # print(f" user_place {location}: {place}")
 
 
-def game_board(game_log):
+def valid_user_placement(game_list, mark):
+    # place player marker
+    placed = False
+    while placed == False:
+        row = user_place_choice('row')
+        column = user_place_choice('column')
+        if game_list[row][column] == ' ':
+            game_list[row][column] = mark
+            return game_list
+        else:
+            print("Placement is already taken, try again")
+
+
+def game_board(game_list):
     """Print game board with current placements"""
     div_top = " ___________ "
     div_mid = "|---|---|---|"
@@ -64,11 +77,11 @@ def game_board(game_log):
 
     table = f"""
     {div_top}
-    | {game_log[0][0]} | {game_log[0][1]} | {game_log[0][2]} |
+    | {game_list[0][0]} | {game_list[0][1]} | {game_list[0][2]} |
     {div_mid}
-    | {game_log[1][0]} | {game_log[1][1]} | {game_log[1][2]} |
+    | {game_list[1][0]} | {game_list[1][1]} | {game_list[1][2]} |
     {div_mid}
-    | {game_log[2][0]} | {game_log[2][1]} | {game_log[2][2]} |
+    | {game_list[2][0]} | {game_list[2][1]} | {game_list[2][2]} |
     {div_bottom}
     """
 
