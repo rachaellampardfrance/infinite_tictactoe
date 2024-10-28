@@ -1,0 +1,10 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# stop git recognising juypter outputs
+.ipynb_checkpoints
+
+# .*  # ignore all hidden files and folders
+# !/.gitignore  # explicitly do not ignore .gitignore
