@@ -3,6 +3,7 @@
 class GameBoard:
 
     players = ['X', 'O']
+    board_index = ['1', '2', '3']
 
     def __init__(self, player):
         # initialise empty game board
@@ -34,6 +35,22 @@ class GameBoard:
         {div_bottom}
         """
         return board    
+    
+    def is_valid_placement(self, row, column):
+        if self.is_board_location(row, column):
+            if self.list[int(row)-1][int(column)-1] == ' ':
+                return True
+            else:
+                return False
+        else:
+            raise ValueError("Not a valid location")
+        
+    @classmethod
+    def is_board_location(cls, row, column):
+        if row in cls.board_index and column in cls.board_index:
+            return True
+        return False
+        
 
     @property
     def player(self):
