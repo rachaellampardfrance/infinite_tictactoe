@@ -2,21 +2,21 @@
 
 class GameBoard:
 
-    players = ['X', 'O']
+    player_tokens = ['X', 'O']
     board_index = [1, 2, 3]
 
-    def __init__(self, player):
+    def __init__(self, player_token):
         # initialise empty game board
         self.list = [
             [' ', ' ', ' '],
             [' ', ' ', ' '],
             [' ', ' ', ' ']
         ]   
-        self.player = player
-        if self.player == 'X':
-            self.bot = 'O'
+        self.player_token = player_token
+        if self.player_token == 'X':
+            self.bot_token = 'O'
         else:
-            self.bot = 'X'
+            self.bot_token = 'X'
 
     def __str__(self):
         div_top = " ___________ "
@@ -24,8 +24,8 @@ class GameBoard:
         div_bottom = f" {chr(8254)*11} "
         # create board print loop
         board = f"""
-        Player: {self.player}
-        Computer: {self.bot}
+        Player: {self.player_token}
+        Computer: {self.bot_token}
         {div_top}
         | {self.list[0][0]} | {self.list[0][1]} | {self.list[0][2]} |
         {div_mid}
@@ -59,10 +59,10 @@ class GameBoard:
         
 
     @property
-    def player(self):
-        return self._player
-    @player.setter
-    def player(self, player):
-        if not player in GameBoard.players:
+    def player_token(self):
+        return self._player_token
+    @player_token.setter
+    def player_token(self, player_token):
+        if not player_token in GameBoard.player_tokens:
             raise ValueError("Not a player") 
-        self._player = player
+        self._player_token = player_token

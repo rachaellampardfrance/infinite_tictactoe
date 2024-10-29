@@ -18,6 +18,14 @@ def main():
         game_on = game_on_choice()
 
 
+
+
+
+
+
+
+
+
 def create_game_board():
     """create game board class and set player marker"""
     created = False
@@ -39,7 +47,7 @@ def place(game_board):
         try:
             # use class function to check placement exists and is free
             if game_board.is_valid_placement(row, column):
-                game_board.list[int(row)-1][int(column)-1] = game_board.player
+                game_board.list[int(row)-1][int(column)-1] = game_board.player_token
                 return game_board
             else:
                 print("placement is already taken, try again")
@@ -48,6 +56,8 @@ def place(game_board):
     
 
 def game_on_choice():
+    """Gets user input at the end of each game loop
+    for if the user wants to continue playing"""
     choice = 'none'
     yes_no = ['Y', 'N']
 
@@ -80,8 +90,8 @@ def easy_bot_turn(game_board):
         try:
             # use class function to check placement exists and is free
             if game_board.is_valid_placement(str(row), str(column)):
-                print(f"Computer placed {game_board.bot} at {row}, {column}")
-                game_board.list[row -1][column -1] = game_board.bot
+                print(f"Computer placed {game_board.bot_token} at {row}, {column}")
+                game_board.list[row -1][column -1] = game_board.bot_token
                 return game_board
             else:
                 print("is not valid bot placement")
