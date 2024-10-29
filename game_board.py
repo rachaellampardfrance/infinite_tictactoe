@@ -13,10 +13,7 @@ class GameBoard:
             [' ', ' ', ' ']
         ]   
         self.player_token = player_token
-        if self.player_token == 'X':
-            self.bot_token = 'O'
-        else:
-            self.bot_token = 'X'
+        self.bot_token = self.assign_bot_token(self.player_token)
 
     def __str__(self):
         div_top = " ___________ "
@@ -35,6 +32,14 @@ class GameBoard:
         {div_bottom}
         """
         return board    
+    
+    def assign_bot_token(self, user_token):
+        if user_token == 'X':
+            return 'O'
+        elif user_token == 'O':
+            return 'X'
+        raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
+
     
     def is_valid_placement(self, row, column):
         if row.isdigit() and column.isdigit():
