@@ -9,10 +9,13 @@ def main():
     # basic moves and board printing
     # create game loop
     # create win condition
-    game_board = place(game_board)
-    print(game_board)
-    easy_bot_turn(game_board)
-    print(game_board)
+    game_on = True
+    while game_on:
+        game_board = place(game_board)
+        print(game_board)
+        game_board = easy_bot_turn(game_board)
+        print(game_board)
+        game_on = game_on_choice()
 
 
 def create_game_board():
@@ -44,6 +47,20 @@ def place(game_board):
             print(e)
     
 
+def game_on_choice():
+    choice = 'none'
+    yes_no = ['Y', 'N']
+
+    while choice not in yes_no:
+
+        choice = input("Continue playing Y/N? ").upper()
+        if choice not in yes_no:
+            print(f"{choice} is not a valid option, try again")
+
+        if choice == "Y":
+            return True
+        elif choice == "N":
+            return False
 
 
 
