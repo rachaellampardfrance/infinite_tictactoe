@@ -11,15 +11,15 @@ def test_init():
         ]
     # correct player and bot markers
     game_board = GameBoard('X')
-    assert game_board.player == 'X' and game_board.bot == 'O'
+    assert game_board.player_token == 'X' and game_board.bot_token == 'O'
     game_board = GameBoard('O')
-    assert game_board.player == 'O' and game_board.bot == 'X'
-    # raises errors
-    with pytest.raises(ValueError):
+    assert game_board.player_token == 'O' and game_board.bot_token == 'X'
+    # raises errors with invalid player type
+    with pytest.raises(ValueError, match="Not a player"):
         game_board = GameBoard('1')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Not a player"):
         game_board = GameBoard('a')
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Not a player"):
         game_board = GameBoard('!')
 
 def test_is_board_location():
@@ -35,10 +35,15 @@ def test_valid_placement():
     # confirms valid placement
     game_board = GameBoard('X')
     assert game_board.is_valid_placement('1', '1') == True
-    # raises error if placement already taken
-    with pytest.raises(ValueError):
+
+    # raises error if placement is not a board location
+    with pytest.raises(ValueError, match="Not a valid location"):
         game_board = GameBoard('X')
         game_board.is_valid_placement('0', '1')
+    with pytest.raises(ValueError, match="Not a valid location"):
+        game_board = GameBoard('X')
+        game_board.is_valid_placement('1', '4')
+
     # False if location occupied
     game_board = GameBoard('X')
     game_board.list = [     
@@ -47,8 +52,8 @@ def test_valid_placement():
         [' ', ' ', ' ']
     ]
     assert game_board.is_valid_placement('1', '1') == False
-    # with pytest.raises(ValueError):
-    #     game_board = GameBoard('O')
-    #     game_board.valid_placement('a', '1')
 
-
+    # raises error if passed in placements are not digits
+    with pytest.raises(ValueError, match="One or more inputs is not valid"):
+        game_board = GameBoard('O')
+        game_board.is_valid_placement('a', '1')
