@@ -13,9 +13,20 @@ def main():
     while game_on:
         game_board = place(game_board)
         print(game_board)
+        winner = check_for_winner(game_board.list)
+        if winner:
+            print(winner)
+            game_on = False
+            return
         game_board = easy_bot_turn(game_board)
         print(game_board)
+        winner = check_for_winner(game_board.list)
+        if winner:
+            print(winner)
+            game_on = False
+            return
         game_on = game_on_choice()
+        
 
 
 
@@ -75,7 +86,29 @@ def game_on_choice():
 
 
 
+def check_for_winner(game_list):
+    """Check for winner, return winner or None"""
+    win_text = f"WINNER! : "
 
+    # check if any row is all the same token
+    for i in range(3):
+        if game_list[i][0] == game_list[i][1] == game_list[i][2] and not game_list[i][0] == ' ':
+            winner = game_list[i][0]
+            return win_text + winner
+    #  check if any column is all the same token
+    for i in range(3):
+        if game_list[0][i] == game_list[1][i] == game_list[2][i] and not game_list[0][i] == ' ':
+            winner = game_list[0][i]
+            return win_text + winner
+    #  check is any diagonal is all the same token
+    if game_list[0][0] == game_list[1][1] == game_list[2][2] and not game_list[0][0] == ' ':
+        winner = game_list[0][0]
+        return win_text + winner
+    if game_list[0][2] == game_list[1][1] == game_list[2][0] and not game_list[1][1] == ' ':
+        winner = game_list[1][1]
+        return win_text + winner
+    # if no winner
+    return None
 
 
 def easy_bot_turn(game_board):
