@@ -4,11 +4,11 @@ from random import randint
 
 
 def main():
+    # create GameBoard class instance
     game_board = create_game_board()
     print(game_board)
-    # basic moves and board printing
-    # create game loop
-    # create win condition
+    
+    # game loop
     game_on = True
     while game_on:
         game_board = place(game_board)
@@ -27,6 +27,8 @@ def main():
             return
         game_on = game_on_choice()
         
+
+
 
 
 
@@ -84,11 +86,9 @@ def game_on_choice():
             return False
 
 
-
-
 def check_for_winner(game_list):
     """Check for winner, return winner or None"""
-    win_text = f"WINNER! : "
+    win_text = "WINNER! : "
 
     # check if any row is all the same token
     for i in range(3):
@@ -112,8 +112,10 @@ def check_for_winner(game_list):
 
 
 def easy_bot_turn(game_board):
-    # create the logic for bot taking turn
-    # reading edges to make choices
+    """basic random placement bot"""
+
+    # get GameBoard index for min, max
+    # board placements incase board size changes
     min = int(GameBoard.board_index[0])
     max = int(GameBoard.board_index[-1])
 
@@ -132,10 +134,6 @@ def easy_bot_turn(game_board):
         except ValueError as e:
             print(f"Bot triggered Error: '{e}'")
             pass
-
-# add in medium and hard bots using
-# edge checking logic
-
 
 
 if __name__ == '__main__':
