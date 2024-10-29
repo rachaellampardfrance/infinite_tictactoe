@@ -7,6 +7,8 @@ def main():
     game_board = create_game_board()
     print(game_board)
     # basic moves and board printing
+    # create game loop
+    # create win condition
     game_board = place(game_board)
     print(game_board)
     easy_bot_turn(game_board)
@@ -58,12 +60,10 @@ def easy_bot_turn(game_board):
     while True:
         row = randint(min, max)
         column = randint(min, max)
-        print(f"bot row: {row}")
-        print(f"bot column: {column}")
         try:
             # use class function to check placement exists and is free
             if game_board.is_valid_placement(str(row), str(column)):
-                print(f"Computer placed {game_board.bot} at {row - 1}, {column - 1}")
+                print(f"Computer placed {game_board.bot} at {row}, {column}")
                 game_board.list[row -1][column -1] = game_board.bot
                 return game_board
             else:
