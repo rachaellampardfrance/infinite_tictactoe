@@ -4,14 +4,14 @@ from random import randint
 
 
 def main():
+    # create GameBoard class instance
     game_board = create_game_board()
     print(game_board)
-    # basic moves and board printing
-    # create game loop
-    # create win condition
+    
+    # game loop
     game_on = True
     while game_on:
-        game_board = place(game_board)
+        game_board = user_place(game_board)
         print(game_board)
         winner = check_for_winner(game_board.list)
         if winner:
@@ -37,6 +37,8 @@ def main():
 
 
 
+
+
 def create_game_board():
     """create game board class and set player marker"""
     created = False
@@ -49,9 +51,11 @@ def create_game_board():
             print(e)
 
 
-def place(game_board):
-    # get first and last list items of board index for range
-    board_indexes = '-'.join(str(GameBoard.board_index[0]) + str(GameBoard.board_index[-1])) 
+def user_place(game_board):
+    """Loop until valid user placement is input"""
+    
+    # get first and last list items of board index for placement range
+    board_indexes = '-'.join(str(game_board.index[0]) + str(game_board.index[-1])) 
     while True:
         row = input(f"select row location {board_indexes}: ")
         column = input(f"select column location {board_indexes}: ")
@@ -84,11 +88,9 @@ def game_on_choice():
             return False
 
 
-
-
 def check_for_winner(game_list):
     """Check for winner, return winner or None"""
-    win_text = f"WINNER! : "
+    win_text = "WINNER! : "
 
     # check if any row is all the same token
     for i in range(3):
@@ -112,10 +114,12 @@ def check_for_winner(game_list):
 
 
 def easy_bot_turn(game_board):
-    # create the logic for bot taking turn
-    # reading edges to make choices
-    min = int(GameBoard.board_index[0])
-    max = int(GameBoard.board_index[-1])
+    """basic random placement bot"""
+
+    # get GameBoard index for min, max
+    # board placements incase board size changes
+    min = int(game_board.index[0])
+    max = int(game_board.index[-1])
 
     while True:
         row = randint(min, max)
@@ -132,10 +136,6 @@ def easy_bot_turn(game_board):
         except ValueError as e:
             print(f"Bot triggered Error: '{e}'")
             pass
-
-# add in medium and hard bots using
-# edge checking logic
-
 
 
 if __name__ == '__main__':
