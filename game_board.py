@@ -5,40 +5,67 @@ class GameBoard:
     player_tokens = ['X', 'O']
     board_index = [1, 2, 3]
 
-    def __init__(self, player_token):
-        # initialise empty game board
-        self.list = [
-            [' ', ' ', ' '],
-            [' ', ' ', ' '],
-            [' ', ' ', ' ']
-        ]   
+    def __init__(self, player_token, size=3):
+        """initialise empty game board
+        size default is 3"""
+        self.size = size
+        self.list = self.generate_list()
         self.player_token = player_token
-        self.bot_token = self.assign_bot_token(self.player_token)
+        self.bot_token = self.assign_bot_token()
+
 
     def __str__(self):
-        div_top = " ___________ "
-        div_mid = "|---|---|---|"
-        div_bottom = f" {chr(8254)*11} "
-        # create board print loop
-        board = f"""
-        Player: {self.player_token}
-        Computer: {self.bot_token}
-        {div_top}
-        | {self.list[0][0]} | {self.list[0][1]} | {self.list[0][2]} |
-        {div_mid}
-        | {self.list[1][0]} | {self.list[1][1]} | {self.list[1][2]} |
-        {div_mid}
-        | {self.list[2][0]} | {self.list[2][1]} | {self.list[2][2]} |
-        {div_bottom}
-        """
-        return board    
+        """return formatted string of players
+        and game board instance in it's current state"""
+
+        # generate board top, dividers and bottom
+        # by game board instance size
+        top = " "
+        divide = "|"
+        bottom = " "
+        for i in range(self.size):
+            divide += "---|"
+            if not i == self.size - 1:
+                top += "____"
+                bottom += f"{chr(8254)*4}"
+            else:
+                # one shorter with space
+                top += "___ "
+                bottom += f"{chr(8254)*3} "
+
+        # Generate game board with loop for 
+        # allocating item placements in rows
+        board = (f"Player: {self.player_token}\n"
+        f"Computer: {self.bot_token}\n"
+        f"{top}")
+        for i in range(self.size):
+            board += "\n|"
+            for j in range(self.size):
+                board += f" {self.list[i][j]} |"
+            if not i == self.size - 1:
+                board += f"\n{divide}"
+            else:
+                board += f"\n{bottom}"
+        return board
     
-    def assign_bot_token(self, user_token):
-        if user_token == 'X':
+
+    def assign_bot_token(self):
+        if self.player_token == 'X':
             return 'O'
-        elif user_token == 'O':
+        elif self.player_token == 'O':
             return 'X'
         raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
+    
+
+    def generate_list(self):
+        table = []  
+        for i in range(self.size):
+            row = []
+            for j in range(self.size):
+                row.append(' ')
+            table.append(row)       
+        return table
+        
 
     
     def is_valid_placement(self, row, column):
