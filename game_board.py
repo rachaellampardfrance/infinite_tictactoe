@@ -105,3 +105,17 @@ class GameBoard:
         if not player_token in GameBoard.player_tokens:
             raise ValueError("Not a player") 
         self._player_token = player_token
+
+
+    @property
+    def size(self):
+        return self._size
+    @size.setter
+    def size(self, size):
+        if type(size) == int:
+            if 3 <= size <= 5:
+                self._size = size
+            else:
+                raise ValueError("argument 'size' must be between 3 - 5 inclusive")
+        else:
+            raise ValueError("'size' must be of type 'int'")
