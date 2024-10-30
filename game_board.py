@@ -3,12 +3,12 @@
 class GameBoard:
 
     player_tokens = ['X', 'O']
-    board_index = [1, 2, 3]
 
     def __init__(self, player_token, size=3):
         """initialise empty game board
         size default is 3"""
         self.size = size
+        self.index = self.generate_index()
         self.list = self.generate_list()
         self.player_token = player_token
         self.bot_token = self.assign_bot_token()
@@ -49,13 +49,12 @@ class GameBoard:
         return board
     
 
-    def assign_bot_token(self):
-        if self.player_token == 'X':
-            return 'O'
-        elif self.player_token == 'O':
-            return 'X'
-        raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
-    
+    def generate_index(self):
+        index = []
+        for i in range(self.size):
+            index.append(i + 1) 
+        return index
+
 
     def generate_list(self):
         table = []  
@@ -65,6 +64,14 @@ class GameBoard:
                 row.append(' ')
             table.append(row)       
         return table
+    
+
+    def assign_bot_token(self):
+        if self.player_token == 'X':
+            return 'O'
+        elif self.player_token == 'O':
+            return 'X'
+        raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
         
 
     
@@ -80,10 +87,10 @@ class GameBoard:
         else:
             raise ValueError("One or more inputs is not valid")
         
-    @classmethod
-    def is_board_location(cls, row, column):
+
+    def is_board_location(self, row, column):
         if row.isdigit() and column.isdigit():
-            if int(row) in cls.board_index and int(column) in cls.board_index:
+            if int(row) in self.index and int(column) in self.index:
                 return True
             return False
         else:

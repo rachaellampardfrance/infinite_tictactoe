@@ -11,7 +11,7 @@ def main():
     # game loop
     game_on = True
     while game_on:
-        game_board = place(game_board)
+        game_board = user_place(game_board)
         print(game_board)
         winner = check_for_winner(game_board.list)
         if winner:
@@ -51,9 +51,11 @@ def create_game_board():
             print(e)
 
 
-def place(game_board):
-    # get first and last list items of board index for range
-    board_indexes = '-'.join(str(GameBoard.board_index[0]) + str(GameBoard.board_index[-1])) 
+def user_place(game_board):
+    """Loop until valid user placement is input"""
+    
+    # get first and last list items of board index for placement range
+    board_indexes = '-'.join(str(game_board.index[0]) + str(game_board.index[-1])) 
     while True:
         row = input(f"select row location {board_indexes}: ")
         column = input(f"select column location {board_indexes}: ")
@@ -116,8 +118,8 @@ def easy_bot_turn(game_board):
 
     # get GameBoard index for min, max
     # board placements incase board size changes
-    min = int(GameBoard.board_index[0])
-    max = int(GameBoard.board_index[-1])
+    min = int(game_board.index[0])
+    max = int(game_board.index[-1])
 
     while True:
         row = randint(min, max)
