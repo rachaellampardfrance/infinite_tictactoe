@@ -8,3 +8,8 @@ def validate_digit(*items):
     for item in items:
         if not item.isdigit():
             raise ValueError(f"'{item}' is not a digit")
+        
+def validate_int(*items):
+    for item in items:
+        if not type(item) is int:
+            raise ValueError(f"'{type(item).__name__}' is nto of type 'int'")
