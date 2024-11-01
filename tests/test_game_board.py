@@ -160,6 +160,26 @@ def test_is_valid_placement():
         game_board = GameBoard('O')
         game_board.is_valid_placement('a', '1')
 
+def test_get_list_item():
+    game_board = GameBoard('X')
+    game_board.list = [     
+        ['X', ' ', ' '],
+        [' ', 'O', ' '],
+        [' ', ' ', 'X']
+    ]
+    assert game_board.get_list_item('1', '1') == 'X'
+    assert game_board.get_list_item('2', '2') == 'O'
+    assert game_board.get_list_item('3', '3') == 'X'
+    assert game_board.get_list_item('3', '2') == ' '
+
+    with pytest.raises(ValueError, match="One or more inputs is not valid"):
+        game_board.get_list_item('a', '1')
+    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
+        game_board.get_list_item([1, 2, 3], '1')
+    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
+        game_board.get_list_item(1, '1')
+
+
 
 def test_str():
     """test printing the 'game board'
