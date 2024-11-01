@@ -51,10 +51,12 @@ def test_size():
         game_board = GameBoard('X', 6)
 
     # size only accepts 'int' type
-    with pytest.raises(ValueError, match="'size' must be of type 'int'"):
+    with pytest.raises(ValueError, match="'str' is not of type 'int'"):
         game_board = GameBoard('X', 'a')
-    with pytest.raises(ValueError, match="'size' must be of type 'int'"):
+    with pytest.raises(ValueError, match="'str' is not of type 'int'"):
         game_board = GameBoard('X', '!')
+    with pytest.raises(ValueError, match="'list' is not of type 'int'"):
+        game_board = GameBoard('X', [1, 2])
 
 
 def test_generate_index():
@@ -89,11 +91,11 @@ def test_player_token():
     assert game_board.player_token == 'O'
 
     # raises errors: invalid player token
-    with pytest.raises(ValueError, match="Not a player"):
+    with pytest.raises(ValueError, match="'1' is not a valid player token. Valid tokens 'X', 'O'"):
         game_board = GameBoard('1')
-    with pytest.raises(ValueError, match="Not a player"):
+    with pytest.raises(ValueError, match="'a' is not a valid player token. Valid tokens 'X', 'O'"):
         game_board = GameBoard('a')
-    with pytest.raises(ValueError, match="Not a player"):
+    with pytest.raises(ValueError, match="'!' is not a valid player token. Valid tokens 'X', 'O'"):
         game_board = GameBoard('!')
 
 
@@ -107,27 +109,34 @@ def test_assign_bot_token():
     assert game_board.bot_token == 'X'
 
 
-def test_is_board_location():
+def test_validate_board_location():
     """check function can identify all board locations"""
 
-    # True: identifies existing board locations
+    # does not raise error: valid board location 
     game_board = GameBoard('X')
-    assert game_board.is_board_location('1', '3') == True
-    assert game_board.is_board_location('3', '1') == True
-    # False: locations are not existing board locations
-    assert game_board.is_board_location('0', '1') == False
-    assert game_board.is_board_location('4', '3') == False
-    assert game_board.is_board_location('1', '0') == False
-    assert game_board.is_board_location('3', '4') == False
+    try:
+        game_board.validate_board_location('1', '3')
+    except:
+        assert False, "'1', '3' raised an exception"
+    # raises error: out of bounds board locations 
+    with pytest.raises(ValueError, match="Not a board location"):
+        game_board.validate_board_location('0', '1')
+    with pytest.raises(ValueError, match="Not a board location"):
+        game_board.validate_board_location('1', '4')
     # raises error: either input value is not a digit
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
-        game_board.is_board_location('a', '1')
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
-        game_board.is_board_location('!', '1')
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
-        game_board.is_board_location('1', 'a')
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
-        game_board.is_board_location('1', '!')
+    with pytest.raises(ValueError, match="'a' is not a digit"):
+        game_board.validate_board_location('a', '1')
+    with pytest.raises(ValueError, match="'!' is not a digit"):
+        game_board.validate_board_location('!', '1')
+    with pytest.raises(ValueError, match="'a' is not a digit"):
+        game_board.validate_board_location('1', 'a')
+    with pytest.raises(ValueError, match="'!' is not a digit"):
+        game_board.validate_board_location('1', '!')
+    # raises error: either input value is not of type 'str'
+    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
+        game_board.validate_board_location(1, '1')
+    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
+        game_board.validate_board_location([1, 2], '1')
 
 
 def test_is_valid_placement():
@@ -148,15 +157,15 @@ def test_is_valid_placement():
     assert game_board.is_valid_placement('1', '1') == False
 
     # raises error: placement is not a board location
-    with pytest.raises(ValueError, match="Not a valid location"):
+    with pytest.raises(ValueError, match="Not a board location"):
         game_board = GameBoard('X')
         game_board.is_valid_placement('0', '1')
-    with pytest.raises(ValueError, match="Not a valid location"):
+    with pytest.raises(ValueError, match="Not a board location"):
         game_board = GameBoard('X')
         game_board.is_valid_placement('1', '4')
 
     # raises error: passed in placements are not digits
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
+    with pytest.raises(ValueError, match="'a' is not a digit"):
         game_board = GameBoard('O')
         game_board.is_valid_placement('a', '1')
 
