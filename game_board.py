@@ -1,5 +1,5 @@
 """create game board and logic"""
-from validation import validate_str, validate_digit
+from validation import validate_str, validate_digit, validate_int
 
 class GameBoard:
 
@@ -83,8 +83,7 @@ class GameBoard:
 
     def get_list_item(self, row, column):
         validate_str(row, column)
-        if not (row.isdigit() and column.isdigit()):
-            raise ValueError("One or more inputs is not valid")
+        validate_digit(row, column)
         
         return self.list[int(row) - 1][int(column) - 1]
                     
