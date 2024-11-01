@@ -2,7 +2,8 @@
 
 class GameBoard:
 
-    player_tokens = ['X', 'O']
+    PLAYER_TOKENS = ['X', 'O']
+    DEFAULT_LIST_ITEM = ' '
 
     def __init__(self, player_token, size=3):
         """initialise empty game board
@@ -12,7 +13,6 @@ class GameBoard:
         self.list = self.generate_list()
         self.player_token = player_token
         self.bot_token = self.assign_bot_token()
-
 
     def __str__(self):
         """return formatted string of players
@@ -47,14 +47,12 @@ class GameBoard:
             else:
                 board += f"\n{bottom}"
         return board
-    
 
     def generate_index(self):
         index = []
         for i in range(self.size):
             index.append(i + 1) 
         return index
-
 
     def generate_list(self):
         table = []  
@@ -65,29 +63,31 @@ class GameBoard:
             table.append(row)       
         return table
     
-
     def assign_bot_token(self):
         if self.player_token == 'X':
             return 'O'
         elif self.player_token == 'O':
             return 'X'
         raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
-        
-
     
     def is_valid_placement(self, row, column):
-        if row.isdigit() and column.isdigit():
-            if self.is_board_location(row, column):
-                if self.list[int(row) - 1][int(column) - 1] == ' ':
-                    return True
-                else:
-                    return False
-            else:
-                raise ValueError("Not a valid location")
-        else:
+        if not row.isdigit() and not column.isdigit():
             raise ValueError("One or more inputs is not valid")
+        if not self.is_board_location(row, column):
+             raise ValueError("Not a valid location")
         
+        item = self.get_list_item(row, column)
 
+        if self.is_default_list_item(item):
+            return True
+        return False
+
+    def get_list_item(self, row, column):
+        return self.list[int(row) - 1][int(column) - 1]
+
+    def is_default_list_item(self, item):
+        return item == GameBoard.DEFAULT_LIST_ITEM
+                    
     def is_board_location(self, row, column):
         if row.isdigit() and column.isdigit():
             if int(row) in self.index and int(column) in self.index:
@@ -95,17 +95,15 @@ class GameBoard:
             return False
         else:
             raise ValueError("One or more inputs is not valid")
-        
 
     @property
     def player_token(self):
         return self._player_token
     @player_token.setter
     def player_token(self, player_token):
-        if not player_token in GameBoard.player_tokens:
+        if not player_token in GameBoard.PLAYER_TOKENS:
             raise ValueError("Not a player") 
         self._player_token = player_token
-
 
     @property
     def size(self):
