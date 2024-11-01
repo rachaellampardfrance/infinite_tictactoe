@@ -104,7 +104,7 @@ class GameBoard:
         validate_digit(row, column)
         
         if not (int(row) in self.index and int(column) in self.index):
-            raise ValueError("Not a valid location")
+            raise ValueError("Not a board location")
 
         
     @classmethod
@@ -123,7 +123,7 @@ class GameBoard:
     @classmethod
     def valid_token(cls, token):
         if not token in cls.PLAYER_TOKENS:
-            raise ValueError(f"{token} is not a valid player token. Valid tokens 'X', 'O'")
+            raise ValueError(f"'{token}' is not a valid player token. Valid tokens 'X', 'O'")
 
 
     @property
