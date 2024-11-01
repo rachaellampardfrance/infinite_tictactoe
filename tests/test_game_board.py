@@ -172,7 +172,7 @@ def test_get_list_item():
     assert game_board.get_list_item('3', '3') == 'X'
     assert game_board.get_list_item('3', '2') == ' '
 
-    with pytest.raises(ValueError, match="One or more inputs is not valid"):
+    with pytest.raises(ValueError, match="'a' is not a digit"):
         game_board.get_list_item('a', '1')
     with pytest.raises(ValueError, match="'list' is not of type 'str'"):
         game_board.get_list_item([1, 2, 3], '1')
