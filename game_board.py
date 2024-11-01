@@ -1,4 +1,5 @@
 """create game board and logic"""
+from validation import validate_str, validate_digit
 
 class GameBoard:
 
@@ -71,8 +72,6 @@ class GameBoard:
         raise ValueError("Error assigning 'bot_token', 'self.player_token' not equal to 'X' or 'O'")
     
     def is_valid_placement(self, row, column):
-        if not row.isdigit() and not column.isdigit():
-            raise ValueError("One or more inputs is not valid")
         if not self.is_board_location(row, column):
              raise ValueError("Not a valid location")
         
@@ -83,10 +82,11 @@ class GameBoard:
         return False
 
     def get_list_item(self, row, column):
+        validate_str(row, column)
+        if not (row.isdigit() and column.isdigit()):
+            raise ValueError("One or more inputs is not valid")
+        
         return self.list[int(row) - 1][int(column) - 1]
-
-    def is_default_list_item(self, item):
-        return item == GameBoard.DEFAULT_LIST_ITEM
                     
     def is_board_location(self, row, column):
         if row.isdigit() and column.isdigit():
@@ -95,7 +95,12 @@ class GameBoard:
             return False
         else:
             raise ValueError("One or more inputs is not valid")
-
+        
+    @classmethod
+    def is_default_list_item(cls, item):
+        validate_str(item)
+        return item == cls.DEFAULT_LIST_ITEM
+    
     @property
     def player_token(self):
         return self._player_token
