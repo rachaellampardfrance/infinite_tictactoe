@@ -41,7 +41,7 @@ def create_game_board():
             game_board = GameBoard()
             return game_board
         except ValueError as e:
-            print(e)
+            show_error_message(e)
 
 
 def set_tokens():
@@ -53,7 +53,7 @@ def set_tokens():
             player_tokens = Tokens(player_token)
             return player_tokens
         except ValueError as e:
-            print(e)
+            show_error_message(e)
 
 
 def print_game(board, tokens):
@@ -63,42 +63,107 @@ def print_game(board, tokens):
 
 def game_loop(board, player_tokens):
     game_on = True
-    while game_on:
-        board = user_place(board, player_tokens)
-        print_game(board, player_tokens)
-        winner = check_for_winner(board.list)
-        if winner:
-            print(winner)
-            game_on = False
-            return
-        board = easy_bot_turn(board, player_tokens)
-        print_game(board, player_tokens)
-        winner = check_for_winner(board.list)
-        if winner:
-            print(winner)
-            game_on = False
-            return
-        game_on = game_on_choice()
+    try:
+        while game_on:
+                board = user_placement(board, player_tokens)
+                turn(board, player_tokens)
+                board = easy_bot_turn(board, player_tokens)
+                turn(board, player_tokens)
+                game_on = game_on_choice()
+    except ValueError as win:
+        show_win_message(win)
 
 
-def user_place(game_board, player_tokens):
-    """Loop until valid user placement is input"""
-    
-    # get first and last list items of board index for placement range
-    board_indexes = '-'.join(str(game_board.index[0]) + str(game_board.index[-1])) 
+def user_placement(board, player_tokens):
     while True:
-        row = input(f"select row location {board_indexes}: ")
-        column = input(f"select column location {board_indexes}: ")
+        placement_choice = get_user_row_column(board)
         try:
-            # use class function to check placement exists and is free
-            if game_board.is_valid_placement(row, column):
-                game_board.list[int(row)-1][int(column)-1] = player_tokens.user_token
-                return game_board
-            else:
-                print("placement is already taken, try again")
+            return try_place(board, placement_choice, player_tokens.user_token)
         except ValueError as e:
-            print(e)
+            show_error_message(e)
+
+
+def get_user_row_column(board): 
+    board_range = board.min_max()
+    min = board_range["min"]
+    max = board_range["max"]
+
+    row = input(f"select row location {min}-{max}: ")
+    column = input(f"select column location {min}-{max}: ")
+    index = {
+        "row": row,
+        "column": column
+    }
+    return index
+
+
+def try_place(board, location, token):
+    """board: is the game board object
+    location: is a dict containing "min" and "max" keys
+    token: is the current players token"""
+    row = location["row"]
+    column = location["column"]
+    board.validate_placement(row, column)
+    board.list[int(row)-1][int(column)-1] = token
+    return board
+
+
+def easy_bot_turn(board, player_tokens):
+    """basic random placement bot"""
+
+    # get GameBoard index for min, max
+    # board placements incase board size changes
+    min_max = board.min_max()
+    min = int(min_max["min"])
+    max = int(min_max["max"])
+
+    while True:
+        row = str(randint(min, max))
+        column = str(randint(min, max))
+        index_choice = {"row": row, "column": column}
+        try:
+            return try_place(board, index_choice, player_tokens.bot_token)
+            # print(f"Computer placed {tokens.bot_token} at {row}, {column}")
+        except ValueError as e:
+            show_error_message(f"Bot triggered Error: '{e}'")
+
+
+def turn(board, player_tokens):
+    print_game(board, player_tokens)
+    winner = check_for_winner(board)
+    if winner:
+        raise ValueError(winner)
+
+
+def check_for_winner(board):
+    """Check for winner, return winner or None"""
+    list = board.list
+    winner = ''
+
+    # check if any row is all the same token
+    for i in range(3):
+        if list[i][0] == list[i][1] == list[i][2] and not list[i][0] == ' ':
+            winner = list[i][0]
+
+    #  check if any column is all the same token
+    for i in range(3):
+        if list[0][i] == list[1][i] == list[2][i] and not list[0][i] == ' ':
+            winner = list[0][i]
     
+    #  check is any diagonal is all the same token
+    if list[0][0] == list[1][1] == list[2][2] and not list[0][0] == ' ':
+        winner = list[0][0]
+    elif list[0][2] == list[1][1] == list[2][0] and not list[1][1] == ' ':
+        winner = list[1][1]
+
+    if winner:
+        return format_winner_message(winner)
+    return None
+
+
+def format_winner_message(winner):
+    return f"WINNER! : {winner}"
+
 
 def game_on_choice():
     """Gets user input at the end of each game loop
@@ -118,54 +183,12 @@ def game_on_choice():
             return False
 
 
-def check_for_winner(game_list):
-    """Check for winner, return winner or None"""
-    win_text = "WINNER! : "
-
-    # check if any row is all the same token
-    for i in range(3):
-        if game_list[i][0] == game_list[i][1] == game_list[i][2] and not game_list[i][0] == ' ':
-            winner = game_list[i][0]
-            return win_text + winner
-    #  check if any column is all the same token
-    for i in range(3):
-        if game_list[0][i] == game_list[1][i] == game_list[2][i] and not game_list[0][i] == ' ':
-            winner = game_list[0][i]
-            return win_text + winner
-    #  check is any diagonal is all the same token
-    if game_list[0][0] == game_list[1][1] == game_list[2][2] and not game_list[0][0] == ' ':
-        winner = game_list[0][0]
-        return win_text + winner
-    if game_list[0][2] == game_list[1][1] == game_list[2][0] and not game_list[1][1] == ' ':
-        winner = game_list[1][1]
-        return win_text + winner
-    # if no winner
-    return None
+def show_error_message(e):
+    print(e)
 
 
-def easy_bot_turn(board, tokens):
-    """basic random placement bot"""
-
-    # get GameBoard index for min, max
-    # board placements incase board size changes
-    min = int(board.index[0])
-    max = int(board.index[-1])
-
-    while True:
-        row = randint(min, max)
-        column = randint(min, max)
-        try:
-            # use class function to check placement exists and is free
-            if board.is_valid_placement(str(row), str(column)):
-                print(f"Computer placed {tokens.bot_token} at {row}, {column}")
-                board.list[row -1][column -1] = tokens.bot_token
-                return board
-            else:
-                print("is not valid bot placement")
-                pass
-        except ValueError as e:
-            print(f"Bot triggered Error: '{e}'")
-            pass
+def show_win_message(win):
+    print(win)
 
 
 if __name__ == '__main__':
