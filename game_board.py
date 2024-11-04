@@ -3,19 +3,16 @@ from validation import validate_str, validate_digit, validate_int
 
 class GameBoard:
 
-    PLAYER_TOKENS = ['X', 'O']
     DEFAULT_LIST_ITEM = ' '
     MIN_SIZE = 3
     MAX_SIZE = 5
 
-    def __init__(self, player_token, size=MIN_SIZE):
+    def __init__(self, size=MIN_SIZE):
         """initialise empty game board
         size default is 3"""
         self.size = size
         self.index = self.generate_index()
         self.list = self.generate_list()
-        self.player_token = player_token
-        self.bot_token = self.get_bot_token()
 
 
     def __str__(self):
@@ -39,9 +36,7 @@ class GameBoard:
 
         # Generate game board with loop for 
         # allocating item placements in rows
-        board = (f"Player: {self.player_token}\n"
-        f"Computer: {self.bot_token}\n"
-        f"{top}")
+        board = f"{top}"
         for i in range(self.size):
             board += "\n|"
             for j in range(self.size):
@@ -68,19 +63,6 @@ class GameBoard:
                 row.append(' ')
             table.append(row)       
         return table
-    
-
-    def get_bot_token(self):
-        self.validate_user_token()
-
-        if self.player_token == 'X':
-            return 'O'
-        return 'X'
-    
-
-    def validate_user_token(self):
-        if self.player_token not in GameBoard.PLAYER_TOKENS:
-            raise ValueError("Player token is not set to 'X' or 'O'")
 
     
     def is_valid_placement(self, row, column):
@@ -117,23 +99,7 @@ class GameBoard:
     @classmethod
     def validate_size(cls, size):
         if not cls.MIN_SIZE <= size <= cls.MAX_SIZE:
-            raise ValueError("argument 'size' must be between 3 - 5 inclusive")
-    
-
-    @classmethod
-    def valid_token(cls, token):
-        if not token in cls.PLAYER_TOKENS:
-            raise ValueError(f"'{token}' is not a valid player token. Valid tokens 'X', 'O'")
-
-
-    @property
-    def player_token(self):
-        return self._player_token
-    @player_token.setter
-    def player_token(self, player_token):
-        GameBoard.valid_token(player_token)
-         
-        self._player_token = player_token
+            raise ValueError("argument 'size' must be between 3 - 5 inclusive")   
 
 
     @property

@@ -1,31 +1,18 @@
 """This program runs a game of tic tac toe"""
 from game_board import GameBoard
+from tokens import Tokens
 from random import randint
 
 
 def main():
     # create GameBoard class instance
-    game_board = create_game_board()
-    print(game_board)
+    # player_tokens = set_tokens()
+    # game_board = create_game_board()
+    game_board, player_tokens = init_game()
+    print_game(game_board, player_tokens)
     
     # game loop
-    game_on = True
-    while game_on:
-        game_board = user_place(game_board)
-        print(game_board)
-        winner = check_for_winner(game_board.list)
-        if winner:
-            print(winner)
-            game_on = False
-            return
-        game_board = easy_bot_turn(game_board)
-        print(game_board)
-        winner = check_for_winner(game_board.list)
-        if winner:
-            print(winner)
-            game_on = False
-            return
-        game_on = game_on_choice()
+    game_loop(game_board, player_tokens)
         
 
 
@@ -39,19 +26,62 @@ def main():
 
 
 
+
+def init_game():
+    board = create_game_board()
+    tokens = set_tokens()
+    return board, tokens
+
+
 def create_game_board():
     """create game board class and set player marker"""
     created = False
     while created == False:
         try:
-            player = input("Choose X or O: ").strip().upper()
-            game_board = GameBoard(player)
+            game_board = GameBoard()
             return game_board
         except ValueError as e:
             print(e)
 
 
-def user_place(game_board):
+def set_tokens():
+    """Create tokens to be associated with each player"""
+    created = False
+    while created == False:
+        try:
+            player_token = input("Choose X or O: ").strip().upper()
+            player_tokens = Tokens(player_token)
+            return player_tokens
+        except ValueError as e:
+            print(e)
+
+
+def print_game(board, tokens):
+    print(tokens)
+    print(board)
+
+
+def game_loop(board, player_tokens):
+    game_on = True
+    while game_on:
+        board = user_place(board, player_tokens)
+        print_game(board, player_tokens)
+        winner = check_for_winner(board.list)
+        if winner:
+            print(winner)
+            game_on = False
+            return
+        board = easy_bot_turn(board, player_tokens)
+        print_game(board, player_tokens)
+        winner = check_for_winner(board.list)
+        if winner:
+            print(winner)
+            game_on = False
+            return
+        game_on = game_on_choice()
+
+
+def user_place(game_board, player_tokens):
     """Loop until valid user placement is input"""
     
     # get first and last list items of board index for placement range
@@ -62,7 +92,7 @@ def user_place(game_board):
         try:
             # use class function to check placement exists and is free
             if game_board.is_valid_placement(row, column):
-                game_board.list[int(row)-1][int(column)-1] = game_board.player_token
+                game_board.list[int(row)-1][int(column)-1] = player_tokens.user_token
                 return game_board
             else:
                 print("placement is already taken, try again")
@@ -113,23 +143,23 @@ def check_for_winner(game_list):
     return None
 
 
-def easy_bot_turn(game_board):
+def easy_bot_turn(board, tokens):
     """basic random placement bot"""
 
     # get GameBoard index for min, max
     # board placements incase board size changes
-    min = int(game_board.index[0])
-    max = int(game_board.index[-1])
+    min = int(board.index[0])
+    max = int(board.index[-1])
 
     while True:
         row = randint(min, max)
         column = randint(min, max)
         try:
             # use class function to check placement exists and is free
-            if game_board.is_valid_placement(str(row), str(column)):
-                print(f"Computer placed {game_board.bot_token} at {row}, {column}")
-                game_board.list[row -1][column -1] = game_board.bot_token
-                return game_board
+            if board.is_valid_placement(str(row), str(column)):
+                print(f"Computer placed {tokens.bot_token} at {row}, {column}")
+                board.list[row -1][column -1] = tokens.bot_token
+                return board
             else:
                 print("is not valid bot placement")
                 pass
