@@ -67,7 +67,7 @@ def game_loop(board, player_tokens):
         while game_on:
                 board = user_placement(board, player_tokens)
                 turn(board, player_tokens)
-                board = easy_bot_turn(board, player_tokens)
+                board = bot_turn(board, player_tokens)
                 turn(board, player_tokens)
                 game_on = game_on_choice()
     except ValueError as win:
@@ -105,27 +105,29 @@ def try_place(board, location, token):
     column = location["column"]
     board.validate_placement(row, column)
     board.list[int(row)-1][int(column)-1] = token
+    print(f"Computer placed {token} at {row}, {column}")
     return board
 
 
-def easy_bot_turn(board, player_tokens):
+def bot_turn(board, player_tokens):
     """basic random placement bot"""
+    while True:
+        index_choice = get_easy_bot_choice(board)
+        try:
+            return try_place(board, index_choice, player_tokens.bot_token)
+        except ValueError as e:
+            show_error_message(f"Bot triggered Error: '{e}'")
 
-    # get GameBoard index for min, max
-    # board placements incase board size changes
+
+def get_easy_bot_choice(board):
     min_max = board.min_max()
     min = int(min_max["min"])
     max = int(min_max["max"])
 
-    while True:
-        row = str(randint(min, max))
-        column = str(randint(min, max))
-        index_choice = {"row": row, "column": column}
-        try:
-            return try_place(board, index_choice, player_tokens.bot_token)
-            # print(f"Computer placed {tokens.bot_token} at {row}, {column}")
-        except ValueError as e:
-            show_error_message(f"Bot triggered Error: '{e}'")
+    row = str(randint(min, max))
+    column = str(randint(min, max))
+    return {"row": row, "column": column}
+
 
 
 def turn(board, player_tokens):
