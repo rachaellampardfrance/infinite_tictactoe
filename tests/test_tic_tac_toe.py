@@ -3,10 +3,10 @@ from tic_tac_toe import check_for_winner
 
 def test_check_for_winner():
     """check win conditions"""
-
+    game_board = GameBoard()
+    
     # diagonal wins
     # left to right: X win
-    game_board = GameBoard('X')
     game_board.list = [
         ['X', ' ', 'O'],
         [' ', 'X', ' '],
@@ -14,7 +14,6 @@ def test_check_for_winner():
     ]
     assert check_for_winner(game_board.list) == "WINNER! : X"
     # left to right:  O win
-    game_board = GameBoard('X')
     game_board.list = [
         ['O', 'X', 'X'],
         ['X', 'O', ' '],
@@ -22,7 +21,6 @@ def test_check_for_winner():
     ]
     assert check_for_winner(game_board.list) == "WINNER! : O"
     # right to left: X win
-    game_board = GameBoard('O')
     game_board.list = [
         [' ', 'O', 'X'],
         [' ', 'X', 'O'],
@@ -32,7 +30,6 @@ def test_check_for_winner():
 
     # row wins
     # X win
-    game_board = GameBoard('O')
     game_board.list = [
         ['X', 'X', 'X'],
         [' ', ' ', 'O'],
@@ -40,7 +37,6 @@ def test_check_for_winner():
     ]
     assert check_for_winner(game_board.list) == "WINNER! : X"
     # O win
-    game_board = GameBoard('O')
     game_board.list = [
         ['X', ' ', 'X'],
         [' ', 'X', 'O'],
@@ -50,7 +46,6 @@ def test_check_for_winner():
 
     # colum wins
     # X win
-    game_board = GameBoard('O')
     game_board.list = [
         [' ', ' ', 'X'],
         [' ', 'O', 'X'],
@@ -58,7 +53,6 @@ def test_check_for_winner():
     ]
     assert check_for_winner(game_board.list) == "WINNER! : X"
     # O win
-    game_board = GameBoard('O')
     game_board.list = [
         ['X', 'O', ' '],
         [' ', 'O', 'X'],
