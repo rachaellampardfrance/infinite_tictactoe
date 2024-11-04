@@ -135,6 +135,8 @@ def turn(board, player_tokens):
     winner = check_for_winner(board)
     if winner:
         raise ValueError(winner)
+    elif is_stalemate(board):
+        raise ValueError("Stalemate!")
 
 
 def check_for_winner(board):
@@ -165,6 +167,17 @@ def check_for_winner(board):
 
 def format_winner_message(winner):
     return f"WINNER! : {winner}"
+
+
+def is_stalemate(board):
+    list = board.list
+
+    for i in range(3):
+        for j in range(3):
+            if list[i][0] == ' ' or list[i][1] == ' ' or list[i][2] == ' ':
+                return False
+    return True
+
 
 
 def game_on_choice():
