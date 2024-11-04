@@ -47,7 +47,7 @@ def test_check_for_winner():
     # colum wins
     # X win
     game_board.list = [
-        [' ', ' ', 'X'],
+        ['X', ' ', 'X'],
         [' ', 'O', 'X'],
         ['O', 'O', 'X']
     ]

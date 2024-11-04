@@ -29,16 +29,6 @@ def test_player_token():
     with pytest.raises(ValueError, match="'!' is not a valid player token. Valid tokens 'X', 'O'"):
         tokens = Tokens('!')
 
-    # raises errors: invalid data type
-    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
-        tokens = Tokens(1) 
-    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
-        tokens = Tokens([]) 
-    with pytest.raises(ValueError, match="'dict' is not of type 'str'"):
-        tokens = Tokens({}) 
-    with pytest.raises(ValueError, match="'tuple' is not of type 'str'"):
-        tokens = Tokens(()) 
-
 
 def test_get_bot_token():
     """should assign opposite token from player"""
@@ -50,3 +40,18 @@ def test_get_bot_token():
     assert tokens.bot_token == 'O'
     tokens = Tokens('O')
     assert tokens.bot_token == 'X'
+
+def test_valid_token():
+    
+    try:
+        Tokens.valid_token('X')
+    except:
+        assert False, "'X' raised an exception"
+
+    try:
+        Tokens.valid_token('O')
+    except:
+        assert False, "'O' raised an exception"
+
+    with pytest.raises(ValueError, match="'1' is not a valid player token. Valid tokens 'X', 'O'"):
+        Tokens.valid_token('1')

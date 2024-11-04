@@ -10,6 +10,8 @@ def test_validate_str():
         validate_str([1, 2, 3])
     with pytest.raises(ValueError, match="'list' is not of type 'str'"):
         validate_str('1', [1, 2, 3])
+    with pytest.raises(ValueError, match="expected at least one argument but got none"):
+        validate_str()
     
 def test_validate_str_raises_no_exception():
     try:

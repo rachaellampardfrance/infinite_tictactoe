@@ -62,6 +62,8 @@ def test_generate_index():
     assert game_board.generate_index() == [1, 2, 3, 4, 5] 
     game_board = GameBoard(4)
     assert game_board.generate_index() == [1, 2, 3, 4] 
+    game_board = GameBoard(3)
+    assert game_board.generate_index() == [1, 2, 3] 
 
 
 def test_generate_list():
