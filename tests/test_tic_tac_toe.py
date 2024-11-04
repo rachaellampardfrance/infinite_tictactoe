@@ -12,21 +12,21 @@ def test_check_for_winner():
         [' ', 'X', ' '],
         ['O', ' ', 'X']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : X"
+    assert check_for_winner(game_board) == "WINNER! : X"
     # left to right:  O win
     game_board.list = [
         ['O', 'X', 'X'],
         ['X', 'O', ' '],
         [' ', ' ', 'O']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : O"
+    assert check_for_winner(game_board) == "WINNER! : O"
     # right to left: X win
     game_board.list = [
         [' ', 'O', 'X'],
         [' ', 'X', 'O'],
         ['X', ' ', 'O']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : X"
+    assert check_for_winner(game_board) == "WINNER! : X"
 
     # row wins
     # X win
@@ -35,14 +35,14 @@ def test_check_for_winner():
         [' ', ' ', 'O'],
         ['O', ' ', 'O']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : X"
+    assert check_for_winner(game_board) == "WINNER! : X"
     # O win
     game_board.list = [
         ['X', ' ', 'X'],
         [' ', 'X', 'O'],
         ['O', 'O', 'O']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : O"
+    assert check_for_winner(game_board) == "WINNER! : O"
 
     # colum wins
     # X win
@@ -51,11 +51,11 @@ def test_check_for_winner():
         [' ', 'O', 'X'],
         ['O', 'O', 'X']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : X"
+    assert check_for_winner(game_board) == "WINNER! : X"
     # O win
     game_board.list = [
         ['X', 'O', ' '],
         [' ', 'O', 'X'],
         ['O', 'O', 'X']
     ]
-    assert check_for_winner(game_board.list) == "WINNER! : O"
+    assert check_for_winner(game_board) == "WINNER! : O"

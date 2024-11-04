@@ -111,13 +111,16 @@ def test_validate_board_location():
         game_board.validate_board_location([1, 2], '1')
 
 
-def test_is_valid_placement():
+def test_validate_placement():
     """returns True if the location is unoccupied
     and False if occupied"""
 
     # True: valid placement
     game_board = GameBoard()
-    assert game_board.is_valid_placement('1', '1') == True
+    try:
+        game_board.validate_placement('1', '1')
+    except:
+        assert False, "'1', '1' raised an error"
 
     # False: occupied location
     game_board = GameBoard()
@@ -126,17 +129,18 @@ def test_is_valid_placement():
         [' ', ' ', ' '],
         [' ', ' ', ' ']
     ]
-    assert game_board.is_valid_placement('1', '1') == False
+    with pytest.raises(ValueError, match="placement is already taken, try again"):
+        game_board.validate_placement('1', '1') 
 
     # raises error: placement is not a board location
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.is_valid_placement('0', '1')
+        game_board.validate_placement('0', '1')
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.is_valid_placement('1', '4')
+        game_board.validate_placement('1', '4')
 
     # raises error: passed in placements are not digits
     with pytest.raises(ValueError, match="'a' is not a digit"):
-        game_board.is_valid_placement('a', '1')
+        game_board.validate_placement('a', '1')
 
 
 def test_get_list_item():
