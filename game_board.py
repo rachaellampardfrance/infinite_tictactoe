@@ -65,14 +65,13 @@ class GameBoard:
         return table
 
     
-    def is_valid_placement(self, row, column):
+    def validate_placement(self, row, column):
         self.validate_board_location(row, column)
         
         item = self.get_list_item(row, column)
 
-        if self.is_default_list_item(item):
-            return True
-        return False
+        if not self.is_default_list_item(item):
+            raise ValueError("placement is already taken, try again")
 
 
     def get_list_item(self, row, column):
@@ -87,8 +86,12 @@ class GameBoard:
         
         if not (int(row) in self.index and int(column) in self.index):
             raise ValueError("Not a board location")
-
         
+    
+    def min_max(self):
+        return {"min": self.index[0], "max": self.index[-1]}
+
+
     @classmethod
     def is_default_list_item(cls, item):
         validate_str(item)
