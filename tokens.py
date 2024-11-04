@@ -1,5 +1,5 @@
 """create token class and logic"""
-from validation import validate_str, validate_digit, validate_int
+from validation import validate_str
 
 class Tokens:
 
@@ -39,6 +39,7 @@ class Tokens:
         return self._user_token
     @user_token.setter
     def user_token(self, user_token):
+        validate_str(user_token)
         Tokens.valid_token(user_token)
          
         self._user_token = user_token
