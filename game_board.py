@@ -11,7 +11,6 @@ class GameBoard:
     
     instance variables:
     size -- size of the board by (size * size) 
-    index -- an array of ints from 1 to max size inclusive
     list -- a nested array of board locations set by size
     """
 
@@ -26,7 +25,6 @@ class GameBoard:
         size -- 'int' (default 3)
         """
         self.size = size
-        self.index = self.generate_index()
         self.list = self.generate_list()
 
 
@@ -64,14 +62,6 @@ class GameBoard:
         return board
 
 
-    def generate_index(self):
-        """return array from 1 - size inclusive"""
-        index = []
-        for i in range(self.size):
-            index.append(i + 1)
-        return index
-
-
     def generate_list(self):
         """return nested array with length of size"""
         table = []
@@ -94,22 +84,16 @@ class GameBoard:
     def get_list_item(self, row, column):
         """return item at specific board location"""
         self.validate_board_location(row, column)
-        validate_digit(row, column)
 
-        return self.list[int(row) - 1][int(column) - 1]
+        return self.list[row][column]
 
 
     def validate_board_location(self, row, column):
         """raise error if not a board location"""
-        validate_digit(row, column)
+        validate_int(row, column)
 
-        if not (int(row) in self.index and int(column) in self.index):
+        if not (row in range(self.size) and column in range(self.size)):
             raise ValueError("Not a board location")
-
-
-    def min_max(self):
-        """return min max"""
-        return {"min": self.index[0], "max": self.index[-1]}
 
 
     @classmethod

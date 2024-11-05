@@ -2,6 +2,15 @@
 from random import randint
 from game_board import GameBoard
 from tokens import Tokens
+from validation import validate_digit
+
+
+# for values displayed to the user
+DISPLAY_MIN_RANGE = 1
+DISPLAY_MAX_RANGE = 0
+# for real values for indexing GameBoard arrays
+MIN_RANGE = 0
+MAX_RANGE = 0
 
 
 def main():
@@ -16,6 +25,7 @@ def main():
 def init_game():
     """create game board and set player tokens"""
     board = create_game_board()
+    set_max_ranges(board)
     tokens = set_tokens()
     return board, tokens
 
@@ -30,6 +40,14 @@ def create_game_board():
         except ValueError as e:
             show_error_message(e)
     return game_board
+
+
+def set_max_ranges(board):
+    """set ranges by board size"""
+    global MAX_RANGE, DISPLAY_MAX_RANGE
+
+    MAX_RANGE = board.size - 1
+    DISPLAY_MAX_RANGE = board.size
 
 
 def set_tokens():
@@ -70,29 +88,30 @@ def game_loop(board, tokens):
 def user_placement(board, tokens):
     """get user placement choice and try place"""
     while True:
-        placement_choice = get_user_row_column(board)
         try:
-            return try_place(board, placement_choice, tokens.user_token)
+            choice = get_user_row_column()
+            validate_digit(choice["row"], choice["row"])
+            choice = convert_user_input(choice)
+            return try_place(board, choice, tokens.user_token)
         except ValueError as e:
             show_error_message(e)
 
 
-def get_user_row_column(board):
-    """get user row and column placement 
-    
-    get Gameboard object min max size for user range string
-    and get user input for return dict"""
-    board_range = board.min_max()
-    min_range = board_range["min"]
-    max_range = board_range["max"]
-
-    row = input(f"select row location {min_range}-{max_range}: ")
-    column = input(f"select column location {min_range}-{max_range}: ")
-    index = {
+def get_user_row_column():
+    """get user row and column placement return dict"""
+    row = input(f"select row location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
+    column = input(f"select column location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
+    choice = {
         "row": row,
         "column": column
     }
-    return index
+    return choice
+
+
+def convert_user_input(choice):
+    choice["row"] = int(choice["row"]) - 1
+    choice["column"] = int(choice["column"]) - 1
+    return choice
 
 
 def try_place(board, location, token):
@@ -107,33 +126,24 @@ def try_place(board, location, token):
     row = location["row"]
     column = location["column"]
     board.validate_placement(row, column)
-    board.list[int(row)-1][int(column)-1] = token
-    print(f"Computer placed {token} at {row}, {column}")
+    board.list[row][column] = token
     return board
 
 
 def bot_turn(board, tokens):
     """bot placement"""
     while True:
-        index_choice = get_easy_bot_choice(board)
+        index_choice = get_easy_bot_choice()
         try:
             return try_place(board, index_choice, tokens.bot_token)
         except ValueError as e:
             show_error_message(f"Bot triggered Error: '{e}'")
 
 
-def get_easy_bot_choice(board):
-    """generate random board location choice
-    
-    get the min and max size of the board
-    and generate a random row and column
-    """
-    min_max = board.min_max()
-    min_range = int(min_max["min"])
-    max_range = int(min_max["max"])
-
-    row = str(randint(min_range, max_range))
-    column = str(randint(min_range, max_range))
+def get_easy_bot_choice():
+    """generate random choice row/column from global ranges"""
+    row = randint(MIN_RANGE, MAX_RANGE)
+    column = randint(MIN_RANGE, MAX_RANGE)
     return {"row": row, "column": column}
 
 
@@ -151,10 +161,7 @@ def turn(board, tokens):
 
 
 def check_for_winner(board):
-    """Check for winner
-    
-    return winner or None
-    """
+    """Check for winner"""
     table = board.list
     winner = ''
 
