@@ -2,6 +2,7 @@
 from random import randint
 from custom_errors import GameEndError
 from game_board import GameBoard
+from messages import error_message
 from tokens import Tokens
 from validation import validate_digit
 
@@ -156,9 +157,9 @@ def bot_turn(board, tokens):
         try:
             return try_place(board, index_choice, tokens.bot_token)
         except ValueError as e:
-            value_error_message(f"Bot triggered Error: '{e}'")
+            value_error_message(error_message("10", e))
         except TypeError as e:
-            type_error_message(f"Bot triggered Error: '{e}'")
+            type_error_message(error_message("10", e))
 
 
 def get_easy_bot_choice():
@@ -173,10 +174,10 @@ def validate_game_on(board):
     """player turn"""
     winner = check_for_winner(board)
     if winner:
-        raise GameEndError(f"WINNER! {winner}")
+        raise GameEndError(error_message("11", winner))
     
     if is_stalemate(board):
-        raise GameEndError("Stalemate!")
+        raise GameEndError(error_message("12"))
 
 
 def check_for_winner(board):
@@ -237,16 +238,16 @@ def game_on_choice():
 
 def show_error_message(e):
     """format + show error message"""
-    print(f"ERROR: {e}")
+    print(error_message("13", e))
 
 def value_error_message(e):
-    print(f"ValueError: {e}")
+    print(error_message("14", e))
 
 def type_error_message(e):
-    print(f"TypeError: {e}")
+    print(error_message("15", e))
 
 def game_end_error_message(e):
-    print(f"Game End: {e}")
+    print(error_message("16", e))
 
 def exit_message():
     print("Closing...")

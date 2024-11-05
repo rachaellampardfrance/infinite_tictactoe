@@ -6,11 +6,29 @@ ERROR_MESSAGES = {
     "3": "'{}' is not a digit",
     "4": "validate_int expected at least one argument but got none",
     "5": "'{}' is not of type 'int'",
+
+    "6": "placement is already taken, try again",
+    "7": "Not a board location",
+    "8": "'size' must be between {} - {} inclusive",
+    "9": "Error formatting Error: Number of Error Arguments {} Does Not Match The Expected {} Error Arguments.",
+
+    "10": "Bot triggered Error: '{}'",
+
+    "11": "WINNER! {}",
+    "12": "Stalemate!",
+
+    "13": "ERROR: {}",
+    "14": "ValueError: {}",
+    "15": "TypeError: {}",
+    "16": "Game End: {}"
 }
 
-def error_message(error_code, details=""):
+def error_message(message_code, *details):
     """Formatted Error codes"""
-    message = ERROR_MESSAGES.get(error_code, "Unknown Error")
+    message = ERROR_MESSAGES.get(message_code, "Unknown Message")
     if "{}" in message:
-        return message.format(details)
+        if message.count("{}") == len(details):
+            return message.format(*details)
+        else:
+            raise ValueError(ERROR_MESSAGES["8", message.count("{}"), len(details)])
     return message
