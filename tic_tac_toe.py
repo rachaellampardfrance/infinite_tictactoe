@@ -14,12 +14,17 @@ MAX_RANGE = 0
 
 
 def main():
-    """tic tac toe game creation and game loop"""
-    game_board, player_tokens = init_game()
-    print_game(game_board, player_tokens)
+    try:
+        """tic tac toe game creation and game loop"""
+        game_board, player_tokens = init_game()
+        print_game(game_board, player_tokens)
 
-    # game loop
-    game_loop(game_board, player_tokens)
+        # game loop
+        game_loop(game_board, player_tokens)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        exit_message()
 
 
 def init_game():
@@ -38,7 +43,9 @@ def create_game_board():
             game_board = GameBoard()
             created = True
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
     return game_board
 
 
@@ -58,8 +65,12 @@ def set_tokens():
             player_token = input("Choose X or O: ").strip().upper()
             player_tokens = Tokens(player_token)
             created = True
+
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
+
     return player_tokens
 
 
@@ -74,27 +85,30 @@ def game_loop(board, tokens):
     win and stalemate checks, and game on choice
     """
     game_on = True
-    try:
-        while game_on:
-            board = user_placement(board, tokens)
-            turn(board, tokens)
+    while game_on:
+        board = user_placement(board, tokens)
+        print_game(board, tokens)
+        game_on = is_game_on(board)
+        if game_on:
             board = bot_turn(board, tokens)
-            turn(board, tokens)
-            game_on = game_on_choice()
-    except ValueError as win:
-        show_win_message(win)
+            print_game(board, tokens)
+            game_on = is_game_on(board)
+            if game_on:
+                game_on = game_on_choice()
 
 
 def user_placement(board, tokens):
     """get user placement choice and try place"""
     while True:
+        choice = get_user_row_column()
         try:
-            choice = get_user_row_column()
-            validate_digit(choice["row"], choice["row"])
+            validate_digit(choice["row"], choice["column"])
             choice = convert_user_input(choice)
             return try_place(board, choice, tokens.user_token)
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
 
 
 def get_user_row_column():
@@ -137,7 +151,9 @@ def bot_turn(board, tokens):
         try:
             return try_place(board, index_choice, tokens.bot_token)
         except ValueError as e:
-            show_error_message(f"Bot triggered Error: '{e}'")
+            value_error_message(f"Bot triggered Error: '{e}'")
+        except TypeError as e:
+            type_error_message(f"Bot triggered Error: '{e}'")
 
 
 def get_easy_bot_choice():
@@ -148,16 +164,18 @@ def get_easy_bot_choice():
 
 
 
-def turn(board, tokens):
+def is_game_on(board):
     """player turn"""
-    print_game(board, tokens)
     winner = check_for_winner(board)
-
     if winner:
-        raise ValueError(winner)
-
+        show_win_message(winner)
+        return False
+    
     if is_stalemate(board):
-        raise ValueError("Stalemate!")
+        show_stalemate_message()
+        return False
+    
+    return True
 
 
 def check_for_winner(board):
@@ -220,10 +238,21 @@ def show_error_message(e):
     """format + show error message"""
     print(f"ERROR: {e}")
 
+def value_error_message(e):
+    print(f"ValueError: {e}")
+
+def type_error_message(e):
+    print(f"TypeError: {e}")
 
 def show_win_message(win):
     """format + show winner message"""
     print(f"WINNER! : {win}")
+
+def show_stalemate_message():
+    print("Stalemate!")
+
+def exit_message():
+    print("\nProgram End...")
 
 
 if __name__ == '__main__':
