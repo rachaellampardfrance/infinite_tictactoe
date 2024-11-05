@@ -1,21 +1,37 @@
 """This program runs a game of tic tac toe"""
 from random import randint
+from custom_errors import GameEndError
 from game_board import GameBoard
 from tokens import Tokens
+from validation import validate_digit
+
+
+# for values displayed to the user
+DISPLAY_MIN_RANGE = 1
+DISPLAY_MAX_RANGE = 0
+# for real values for indexing GameBoard arrays
+MIN_RANGE = 0
+MAX_RANGE = 0
 
 
 def main():
-    """tic tac toe game creation and game loop"""
-    game_board, player_tokens = init_game()
-    print_game(game_board, player_tokens)
+    try:
+        """tic tac toe game creation and game loop"""
+        game_board, player_tokens = init_game()
+        print_game(game_board, player_tokens)
 
-    # game loop
-    game_loop(game_board, player_tokens)
+        # game loop
+        game_loop(game_board, player_tokens)
+    except KeyboardInterrupt:
+        print("")
+    finally:
+        exit_message()
 
 
 def init_game():
     """create game board and set player tokens"""
     board = create_game_board()
+    set_max_ranges(board)
     tokens = set_tokens()
     return board, tokens
 
@@ -28,8 +44,18 @@ def create_game_board():
             game_board = GameBoard()
             created = True
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
     return game_board
+
+
+def set_max_ranges(board):
+    """set ranges by board size"""
+    global MAX_RANGE, DISPLAY_MAX_RANGE
+
+    MAX_RANGE = board.size - 1
+    DISPLAY_MAX_RANGE = board.size
 
 
 def set_tokens():
@@ -40,8 +66,12 @@ def set_tokens():
             player_token = input("Choose X or O: ").strip().upper()
             player_tokens = Tokens(player_token)
             created = True
+
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
+
     return player_tokens
 
 
@@ -55,44 +85,52 @@ def game_loop(board, tokens):
     """loop turns, printing board, 
     win and stalemate checks, and game on choice
     """
-    game_on = True
+
     try:
+        game_on = True
         while game_on:
             board = user_placement(board, tokens)
-            turn(board, tokens)
+            print_game(board, tokens)
+            validate_game_on(board)
             board = bot_turn(board, tokens)
-            turn(board, tokens)
+            print_game(board, tokens)
+            validate_game_on(board)
             game_on = game_on_choice()
-    except ValueError as win:
-        show_win_message(win)
+
+    except GameEndError as e:
+        game_end_error_message(e)
+        return
 
 
 def user_placement(board, tokens):
     """get user placement choice and try place"""
     while True:
-        placement_choice = get_user_row_column(board)
+        choice = get_user_row_column()
         try:
-            return try_place(board, placement_choice, tokens.user_token)
+            validate_digit(choice["row"], choice["column"])
+            choice = convert_user_input(choice)
+            return try_place(board, choice, tokens.user_token)
         except ValueError as e:
-            show_error_message(e)
+            value_error_message(e)
+        except TypeError as e:
+            type_error_message(e)
 
 
-def get_user_row_column(board):
-    """get user row and column placement 
-    
-    get Gameboard object min max size for user range string
-    and get user input for return dict"""
-    board_range = board.min_max()
-    min_range = board_range["min"]
-    max_range = board_range["max"]
-
-    row = input(f"select row location {min_range}-{max_range}: ")
-    column = input(f"select column location {min_range}-{max_range}: ")
-    index = {
+def get_user_row_column():
+    """get user row and column placement return dict"""
+    row = input(f"select row location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
+    column = input(f"select column location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
+    choice = {
         "row": row,
         "column": column
     }
-    return index
+    return choice
+
+
+def convert_user_input(choice):
+    choice["row"] = int(choice["row"]) - 1
+    choice["column"] = int(choice["column"]) - 1
+    return choice
 
 
 def try_place(board, location, token):
@@ -107,54 +145,42 @@ def try_place(board, location, token):
     row = location["row"]
     column = location["column"]
     board.validate_placement(row, column)
-    board.list[int(row)-1][int(column)-1] = token
-    print(f"Computer placed {token} at {row}, {column}")
+    board.list[row][column] = token
     return board
 
 
 def bot_turn(board, tokens):
     """bot placement"""
     while True:
-        index_choice = get_easy_bot_choice(board)
+        index_choice = get_easy_bot_choice()
         try:
             return try_place(board, index_choice, tokens.bot_token)
         except ValueError as e:
-            show_error_message(f"Bot triggered Error: '{e}'")
+            value_error_message(f"Bot triggered Error: '{e}'")
+        except TypeError as e:
+            type_error_message(f"Bot triggered Error: '{e}'")
 
 
-def get_easy_bot_choice(board):
-    """generate random board location choice
-    
-    get the min and max size of the board
-    and generate a random row and column
-    """
-    min_max = board.min_max()
-    min_range = int(min_max["min"])
-    max_range = int(min_max["max"])
-
-    row = str(randint(min_range, max_range))
-    column = str(randint(min_range, max_range))
+def get_easy_bot_choice():
+    """generate random choice row/column from global ranges"""
+    row = randint(MIN_RANGE, MAX_RANGE)
+    column = randint(MIN_RANGE, MAX_RANGE)
     return {"row": row, "column": column}
 
 
 
-def turn(board, tokens):
+def validate_game_on(board):
     """player turn"""
-    print_game(board, tokens)
     winner = check_for_winner(board)
-
     if winner:
-        raise ValueError(winner)
-
+        raise GameEndError(f"WINNER! {winner}")
+    
     if is_stalemate(board):
-        raise ValueError("Stalemate!")
+        raise GameEndError("Stalemate!")
 
 
 def check_for_winner(board):
-    """Check for winner
-    
-    return winner or None
-    """
+    """Check for winner"""
     table = board.list
     winner = ''
 
@@ -213,10 +239,17 @@ def show_error_message(e):
     """format + show error message"""
     print(f"ERROR: {e}")
 
+def value_error_message(e):
+    print(f"ValueError: {e}")
 
-def show_win_message(win):
-    """format + show winner message"""
-    print(f"WINNER! : {win}")
+def type_error_message(e):
+    print(f"TypeError: {e}")
+
+def game_end_error_message(e):
+    print(f"Game End: {e}")
+
+def exit_message():
+    print("Closing...")
 
 
 if __name__ == '__main__':
