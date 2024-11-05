@@ -2,6 +2,7 @@
 from random import randint
 from custom_errors import GameEndError
 from game_board import GameBoard
+from messages import error_message, user_message
 from tokens import Tokens
 from validation import validate_digit
 
@@ -63,8 +64,7 @@ def set_tokens():
     created = False
     while created is False:
         try:
-            player_token = input("Choose X or O: ").strip().upper()
-            player_tokens = Tokens(player_token)
+            player_tokens = Tokens(get_user_token_choice())
             created = True
 
         except ValueError as e:
@@ -73,6 +73,12 @@ def set_tokens():
             type_error_message(e)
 
     return player_tokens
+
+
+def get_user_token_choice():
+    tokens = Tokens.PLAYER_TOKENS
+    return input(user_message("1", tokens[0], tokens[1])).strip().upper()
+
 
 
 def print_game(board, tokens):
@@ -118,8 +124,8 @@ def user_placement(board, tokens):
 
 def get_user_row_column():
     """get user row and column placement return dict"""
-    row = input(f"select row location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
-    column = input(f"select column location {DISPLAY_MIN_RANGE}-{DISPLAY_MAX_RANGE}: ")
+    row = input(user_message("2", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE))
+    column = input(user_message("3", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE))
     choice = {
         "row": row,
         "column": column
@@ -140,7 +146,7 @@ def try_place(board, location, token):
     board -- a GameBoard object
     location -- a dict containing 
         {"row": a, "column": b} key variables
-    token -- token 'X' or 'O'
+    token -- must be in Token.PLAYER_TOKENS
     """
     row = location["row"]
     column = location["column"]
@@ -156,9 +162,9 @@ def bot_turn(board, tokens):
         try:
             return try_place(board, index_choice, tokens.bot_token)
         except ValueError as e:
-            value_error_message(f"Bot triggered Error: '{e}'")
+            value_error_message(error_message("10", e))
         except TypeError as e:
-            type_error_message(f"Bot triggered Error: '{e}'")
+            type_error_message(error_message("10", e))
 
 
 def get_easy_bot_choice():
@@ -173,10 +179,10 @@ def validate_game_on(board):
     """player turn"""
     winner = check_for_winner(board)
     if winner:
-        raise GameEndError(f"WINNER! {winner}")
+        raise GameEndError(error_message("11", winner))
     
     if is_stalemate(board):
-        raise GameEndError("Stalemate!")
+        raise GameEndError(error_message("12"))
 
 
 def check_for_winner(board):
@@ -221,35 +227,38 @@ def is_stalemate(board):
 
 def game_on_choice():
     """check if user wants to continue playing"""
-    choice = 'none'
-    yes_no = ['Y', 'N']
+    while True:
+        choice = input(user_message("4")).upper()
+        try:
+            validate_game_on_choice(choice)
+            if choice == "Y":
+                return True
+            return False
 
-    while choice not in yes_no:
+        except ValueError as e:
+            value_error_message(e)
 
-        choice = input("Continue playing Y/N? ").upper()
-        if choice not in yes_no:
-            print(f"{choice} is not a valid option, try again")
 
-    if choice == "Y":
-        return True
-    return False
-
+def validate_game_on_choice(choice):
+    valid = ['Y', 'N']
+    if not choice in valid:
+        raise ValueError(user_message("5", choice))
 
 def show_error_message(e):
     """format + show error message"""
-    print(f"ERROR: {e}")
+    print(error_message("13", e))
 
 def value_error_message(e):
-    print(f"ValueError: {e}")
+    print(error_message("14", e))
 
 def type_error_message(e):
-    print(f"TypeError: {e}")
+    print(error_message("15", e))
 
 def game_end_error_message(e):
-    print(f"Game End: {e}")
+    print(error_message("16", e))
 
 def exit_message():
-    print("Closing...")
+    print(user_message("6"))
 
 
 if __name__ == '__main__':
