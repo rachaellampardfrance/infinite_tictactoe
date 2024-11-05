@@ -1,5 +1,6 @@
 """This program runs a game of tic tac toe"""
 from random import randint
+from custom_errors import GameEndError
 from game_board import GameBoard
 from tokens import Tokens
 from validation import validate_digit
@@ -22,7 +23,7 @@ def main():
         # game loop
         game_loop(game_board, player_tokens)
     except KeyboardInterrupt:
-        pass
+        print("")
     finally:
         exit_message()
 
@@ -84,17 +85,21 @@ def game_loop(board, tokens):
     """loop turns, printing board, 
     win and stalemate checks, and game on choice
     """
-    game_on = True
-    while game_on:
-        board = user_placement(board, tokens)
-        print_game(board, tokens)
-        game_on = is_game_on(board)
-        if game_on:
+
+    try:
+        game_on = True
+        while game_on:
+            board = user_placement(board, tokens)
+            print_game(board, tokens)
+            validate_game_on(board)
             board = bot_turn(board, tokens)
             print_game(board, tokens)
-            game_on = is_game_on(board)
-            if game_on:
-                game_on = game_on_choice()
+            validate_game_on(board)
+            game_on = game_on_choice()
+
+    except GameEndError as e:
+        game_end_error_message(e)
+        return
 
 
 def user_placement(board, tokens):
@@ -164,18 +169,14 @@ def get_easy_bot_choice():
 
 
 
-def is_game_on(board):
+def validate_game_on(board):
     """player turn"""
     winner = check_for_winner(board)
     if winner:
-        show_win_message(winner)
-        return False
+        raise GameEndError(f"WINNER! {winner}")
     
     if is_stalemate(board):
-        show_stalemate_message()
-        return False
-    
-    return True
+        raise GameEndError("Stalemate!")
 
 
 def check_for_winner(board):
@@ -244,15 +245,11 @@ def value_error_message(e):
 def type_error_message(e):
     print(f"TypeError: {e}")
 
-def show_win_message(win):
-    """format + show winner message"""
-    print(f"WINNER! : {win}")
-
-def show_stalemate_message():
-    print("Stalemate!")
+def game_end_error_message(e):
+    print(f"Game End: {e}")
 
 def exit_message():
-    print("\nProgram End...")
+    print("Closing...")
 
 
 if __name__ == '__main__':
