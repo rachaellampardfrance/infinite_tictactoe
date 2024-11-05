@@ -32,3 +32,23 @@ def error_message(message_code, *details):
         else:
             raise ValueError(ERROR_MESSAGES["8", message.count("{}"), len(details)])
     return message
+
+
+USER_MESSAGES = {
+    "1": "Choose {} or {}: ",
+    "2": "select row location {}-{}: ",
+    "3": "select column location {}-{}: ",
+    "4": "Continue playing Y/N? ",
+    "5": "{} is not a valid option",
+    "6": "Closing...",
+}
+
+def user_message(message_code, *details):
+    """Formatted Error codes"""
+    message = USER_MESSAGES.get(message_code, "Unknown Message")
+    if "{}" in message:
+        if message.count("{}") == len(details):
+            return message.format(*details)
+        else:
+            raise ValueError(USER_MESSAGES["8", message.count("{}"), len(details)])
+    return message

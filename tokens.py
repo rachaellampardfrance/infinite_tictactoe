@@ -18,9 +18,9 @@ class Tokens:
     def get_bot_token(self):
         self.validate_user_token()
 
-        if self.user_token == 'X':
-            return 'O'
-        return 'X'
+        available_tokens = Tokens.PLAYER_TOKENS
+        available_tokens.remove(self.user_token)
+        return available_tokens[0]
     
 
     def validate_user_token(self):
