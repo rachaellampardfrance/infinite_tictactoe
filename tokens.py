@@ -1,4 +1,5 @@
 """create token class and logic"""
+from messages import error_message
 from validation import validate_str
 
 class Tokens:
@@ -16,22 +17,23 @@ class Tokens:
     
 
     def get_bot_token(self):
-        self.validate_user_token()
+        # self.validate_user_token()
+        self.valid_token(self.user_token)
 
         available_tokens = Tokens.PLAYER_TOKENS
         available_tokens.remove(self.user_token)
         return available_tokens[0]
-    
-
-    def validate_user_token(self):
-        if self.user_token not in Tokens.PLAYER_TOKENS:
-            raise ValueError("Player token is not set to 'X' or 'O'")
         
 
     @classmethod
     def valid_token(cls, token):
         if not token in cls.PLAYER_TOKENS:
-            raise ValueError(f"'{token}' is not a valid player token. Valid tokens 'X', 'O'")
+            raise ValueError(error_message(
+                "17",
+                token,
+                Tokens.PLAYER_TOKENS[0],
+                Tokens.PLAYER_TOKENS[1])
+                )
 
 
     @property

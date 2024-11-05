@@ -20,7 +20,9 @@ ERROR_MESSAGES = {
     "13": "ERROR: {}",
     "14": "ValueError: {}",
     "15": "TypeError: {}",
-    "16": "Game End: {}"
+    "16": "Game End: {}",
+
+    "17": "'{}' is not a valid player token. Valid tokens {}, {}"
 }
 
 def error_message(message_code, *details):
