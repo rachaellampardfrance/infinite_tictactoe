@@ -20,9 +20,9 @@ class Tokens:
         # self.validate_user_token()
         self.valid_token(self.user_token)
 
-        available_tokens = Tokens.PLAYER_TOKENS
-        available_tokens.remove(self.user_token)
-        return available_tokens[0]
+        if self.user_token == Tokens.PLAYER_TOKENS[0]:
+            return Tokens.PLAYER_TOKENS[1]
+        return Tokens.PLAYER_TOKENS[0]
         
 
     @classmethod
@@ -31,8 +31,8 @@ class Tokens:
             raise ValueError(user_error_message(
                 "7",
                 token,
-                Tokens.PLAYER_TOKENS[0],
-                Tokens.PLAYER_TOKENS[1])
+                cls.PLAYER_TOKENS[0],
+                cls.PLAYER_TOKENS[1])
                 )
 
 
