@@ -22,7 +22,9 @@ ERROR_MESSAGES = {
     "15": "TypeError: {}",
     "16": "Game End: {}",
 
-    "17": "'{}' is not a valid player token. Valid tokens {}, {}"
+    "17": "'{}' is not a valid player token. Valid tokens {}, {}",
+    "18": "validate_positive_int expected at least one argument but got none",
+    "19": "{} is not a positive integer",
 }
 
 def error_message(message_code, *details):
