@@ -1,4 +1,4 @@
-from game_board import GameBoard
+from helpers.game_board import GameBoard
 import pytest
 
 def test_init():

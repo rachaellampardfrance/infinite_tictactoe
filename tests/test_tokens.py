@@ -1,5 +1,5 @@
 """Tests for setting player game tokens"""
-from tokens import Tokens
+from helpers.tokens import Tokens
 import pytest
 
 

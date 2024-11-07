@@ -1,4 +1,4 @@
-from validation import validate_digit, validate_str
+from helpers.validation import validate_digit, validate_str
 import pytest
 
 def test_validate_str():

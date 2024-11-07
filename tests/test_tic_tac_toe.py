@@ -1,4 +1,4 @@
-from game_board import GameBoard
+from helpers.game_board import GameBoard
 from tic_tac_toe import check_for_winner
 
 def test_check_for_winner():
