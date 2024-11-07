@@ -1,6 +1,6 @@
 """create game board and validation"""
-from validation import validate_str, validate_int
-from messages import error_message
+from helpers.validation import validate_str, validate_int, validate_positive_int
+from helpers.messages.messages import error_message, user_error_message
 
 class GameBoard:
     """create a game board with varied size
@@ -16,58 +16,62 @@ class GameBoard:
     """
 
     DEFAULT_LIST_ITEM = ' '
+    BOX_SIZE = 4
     MIN_SIZE = 3
     MAX_SIZE = 5
 
-    def __init__(self, size=MIN_SIZE):
+    def __init__(self, size=MIN_SIZE, box_size=BOX_SIZE):
         """initialise empty game board
 
         keyword arguments:
-        size -- 'int' (default MIN_SIZE)
+        size -- 'int' (default GameBoard.MIN_SIZE)
+        box_size -- 'int' (default GameBoard.BOX_SIZE) 
         """
         self.size = size
-        self.list = self.generate_list()
+        self.list = self._generate_list()
+        self.box = box_size
 
 
     def __str__(self):
         """return formatted string of players
         and game board instance in it's current state
         """
-        top = self.format_board_top()
-        divide = self.format_board_divide()
-        bottom = self.format_board_bottom()
-        board = self.format_board(top, divide, bottom)
+    
+        top = self._format_board_top()
+        divide = self._format_board_divide()
+        bottom = self._format_board_bottom()
+        board = self._format_board(top, divide, bottom)
         return board
 
-    def format_board_top(self):
+    def _format_board_top(self):
         """format top of board by size"""
         top = " "
         for i in range(self.size):
             if i == self.size - 1:
-                top += "___ "
+                top += f"{' ':_>{self.box}}"
             else:
-                top += "____"
+                top += f"{'':_^{self.box}}"
         return top
 
-    def format_board_divide(self):
+    def _format_board_divide(self):
         """format board divide by size"""
         divide = "|"
         for _ in range(self.size):
-            divide += "---|"
+            divide += f"{'|':->{self.box}}"
         return divide
 
-    def format_board_bottom(self):
+    def _format_board_bottom(self):
         """format bottom of board by size"""
         bottom = " "
         for i in range(self.size):
             if i == self.size - 1:
                 # one shorter with space
-                bottom += f"{chr(8254)*3} "
+                bottom += f"{' ':{chr(8254)}>{self.box}} "
             else:
-                bottom += f"{chr(8254)*4}"
+                bottom += f"{'':{chr(8254)}>{self.box}}"
         return bottom
 
-    def format_board(self, top, divide, bottom):
+    def _format_board(self, top, divide, bottom):
         """format board by size
         
         keyvalue arguments:
@@ -79,7 +83,7 @@ class GameBoard:
         for i in range(self.size):
             board += "\n|"
             for j in range(self.size):
-                board += f" {self.list[i][j]} |"
+                board += f"{self.list[i][j]:^{self.box - 1}}" + "|"
             if not i == self.size - 1:
                 board += f"\n{divide}"
             else:
@@ -87,7 +91,7 @@ class GameBoard:
         return board
 
 
-    def generate_list(self):
+    def _generate_list(self):
         """return nested array with length of size"""
         table = []
         for _ in range(self.size):
@@ -103,7 +107,7 @@ class GameBoard:
         item = self.get_list_item(row, column)
 
         if not self.is_default_list_item(item):
-            raise ValueError(error_message("6"))
+            raise ValueError(user_error_message("2"))
 
 
     def get_list_item(self, row, column):
@@ -118,7 +122,7 @@ class GameBoard:
         validate_int(row, column)
 
         if not (row in range(self.size) and column in range(self.size)):
-            raise ValueError(error_message("7"))
+            raise ValueError(user_error_message("3"))
 
 
     @classmethod
@@ -127,13 +131,6 @@ class GameBoard:
         validate_str(item)
 
         return item == cls.DEFAULT_LIST_ITEM
-
-
-    @classmethod
-    def validate_size(cls, size):
-        """raise error if size not within min/max class const"""
-        if not cls.MIN_SIZE <= size <= cls.MAX_SIZE:
-            raise ValueError(error_message("8", cls.MIN_SIZE, cls.MAX_SIZE))
 
 
     @property
@@ -146,3 +143,20 @@ class GameBoard:
         GameBoard.validate_size(size)
 
         self._size = size
+
+    @classmethod
+    def validate_size(cls, size):
+        """raise error if size not within min/max class const"""
+        if not cls.MIN_SIZE <= size <= cls.MAX_SIZE:
+            raise ValueError(error_message("5", cls.MIN_SIZE, cls.MAX_SIZE))
+
+
+    @property
+    def box(self):
+        return self._box
+    @box.setter
+    def box(self, box_size):
+        """return size if valid"""
+        validate_positive_int(box_size)
+
+        self._box = box_size
