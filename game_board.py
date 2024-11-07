@@ -28,7 +28,7 @@ class GameBoard:
         box_size -- 'int' (default GameBoard.BOX_SIZE) 
         """
         self.size = size
-        self.list = self.generate_list()
+        self.list = self._generate_list()
         self.box = box_size
 
 
@@ -37,13 +37,13 @@ class GameBoard:
         and game board instance in it's current state
         """
     
-        top = self.format_board_top()
-        divide = self.format_board_divide()
-        bottom = self.format_board_bottom()
-        board = self.format_board(top, divide, bottom)
+        top = self._format_board_top()
+        divide = self._format_board_divide()
+        bottom = self._format_board_bottom()
+        board = self._format_board(top, divide, bottom)
         return board
 
-    def format_board_top(self):
+    def _format_board_top(self):
         """format top of board by size"""
         top = " "
         for i in range(self.size):
@@ -53,14 +53,14 @@ class GameBoard:
                 top += f"{'':_^{self.box}}"
         return top
 
-    def format_board_divide(self):
+    def _format_board_divide(self):
         """format board divide by size"""
         divide = "|"
         for _ in range(self.size):
             divide += f"{'|':->{self.box}}"
         return divide
 
-    def format_board_bottom(self):
+    def _format_board_bottom(self):
         """format bottom of board by size"""
         bottom = " "
         for i in range(self.size):
@@ -71,7 +71,7 @@ class GameBoard:
                 bottom += f"{'':{chr(8254)}>{self.box}}"
         return bottom
 
-    def format_board(self, top, divide, bottom):
+    def _format_board(self, top, divide, bottom):
         """format board by size
         
         keyvalue arguments:
@@ -91,7 +91,7 @@ class GameBoard:
         return board
 
 
-    def generate_list(self):
+    def _generate_list(self):
         """return nested array with length of size"""
         table = []
         for _ in range(self.size):
