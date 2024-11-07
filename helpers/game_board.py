@@ -1,6 +1,6 @@
 """create game board and validation"""
 from helpers.validation import validate_str, validate_int, validate_positive_int
-from helpers.messages.messages import error_message
+from helpers.messages.messages import error_message, user_error_message
 
 class GameBoard:
     """create a game board with varied size
@@ -107,7 +107,7 @@ class GameBoard:
         item = self.get_list_item(row, column)
 
         if not self.is_default_list_item(item):
-            raise ValueError(error_message("6"))
+            raise ValueError(user_error_message("2"))
 
 
     def get_list_item(self, row, column):
@@ -122,7 +122,7 @@ class GameBoard:
         validate_int(row, column)
 
         if not (row in range(self.size) and column in range(self.size)):
-            raise ValueError(error_message("7"))
+            raise ValueError(user_error_message("3"))
 
 
     @classmethod
@@ -148,7 +148,7 @@ class GameBoard:
     def validate_size(cls, size):
         """raise error if size not within min/max class const"""
         if not cls.MIN_SIZE <= size <= cls.MAX_SIZE:
-            raise ValueError(error_message("8", cls.MIN_SIZE, cls.MAX_SIZE))
+            raise ValueError(error_message("5", cls.MIN_SIZE, cls.MAX_SIZE))
 
 
     @property

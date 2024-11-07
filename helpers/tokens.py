@@ -1,5 +1,5 @@
 """create token class and logic"""
-from helpers.messages.messages import error_message
+from helpers.messages.messages import user_error_message
 from helpers.validation import validate_str
 
 class Tokens:
@@ -28,8 +28,8 @@ class Tokens:
     @classmethod
     def valid_token(cls, token):
         if not token in cls.PLAYER_TOKENS:
-            raise ValueError(error_message(
-                "17",
+            raise ValueError(user_error_message(
+                "7",
                 token,
                 Tokens.PLAYER_TOKENS[0],
                 Tokens.PLAYER_TOKENS[1])

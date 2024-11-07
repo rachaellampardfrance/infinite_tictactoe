@@ -3,28 +3,16 @@
 ERROR_MESSAGES = {
     "1": "validate_str() takes at least 1 argument but got 0",
     "2": "'{}' is not of type 'str'",
-    "3": "'{}' is not a digit",
-    "4": "validate_int() takes at least 1 argument but got 0",
-    "5": "'{}' is not of type 'int'",
-
-    "6": "placement is already taken, try again",
-    "7": "Not a board location",
-    "8": "'size' must be between {} - {} inclusive",
-    "9": "ERROR: error_message() was given {} Error Arguments but was expecting {}.",
-
-    "10": "Bot triggered Error: '{}'",
-
-    "11": "WINNER! {}",
-    "12": "Stalemate!",
-
-    "13": "ERROR: {}",
-    "14": "ValueError: {}",
-    "15": "TypeError: {}",
-    "16": "Game End: {}",
-
-    "17": "'{}' is not a valid player token. Valid tokens {}, {}",
-    "18": "validate_positive_int() takes at least 1 argument but got 0",
-    "19": "{} is not a positive integer",
+    "3": "validate_int() takes at least 1 argument but got 0",
+    "4": "'{}' is not of type 'int'",
+    "5": "'size' must be between {} - {} inclusive",
+    "6": "ERROR: error_message() was given {} Error Arguments but was expecting {}.",
+    "7": "Bot triggered Error: '{}'",
+    "8": "ERROR: {}",
+    "9": "ValueError: {}",
+    "10": "TypeError: {}",
+    "11": "validate_positive_int() takes at least 1 argument but got 0",
+    "12": "{} is not a positive integer",
 }
 
 def error_message(message_code, *details):
@@ -34,7 +22,7 @@ def error_message(message_code, *details):
         if message.count("{}") == len(details):
             return message.format(*details)
         else:
-            raise ValueError(ERROR_MESSAGES["8", message.count("{}"), len(details)])
+            raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
     return message
 
 
@@ -54,5 +42,27 @@ def user_message(message_code, *details):
         if message.count("{}") == len(details):
             return message.format(*details)
         else:
-            raise ValueError(USER_MESSAGES["8", message.count("{}"), len(details)])
+            raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
+    return message
+
+
+USER_ERROR_MESSAGES = {
+    "1": "'{}' is not a digit",
+    "2": "placement is already taken, try again",
+    "3": "Not a board location",
+    "4": "WINNER! {}",
+    "5": "Stalemate!",
+    "6": "Game End: {}",
+    "7": "'{}' is not a valid player token. Valid tokens {}, {}",
+    "8": "Input cannot be empty"
+}
+
+def user_error_message(message_code, *details):
+    """Formatted Error codes"""
+    message = USER_ERROR_MESSAGES.get(message_code, "Unknown Message")
+    if "{}" in message:
+        if message.count("{}") == len(details):
+            return message.format(*details)
+        else:
+            raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
     return message
