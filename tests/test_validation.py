@@ -1,18 +1,21 @@
 from helpers.validation import validate_digit, validate_str
 import pytest
+import re
 
 def test_validate_str():
-    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
+    with pytest.raises(TypeError, match="'int' is not of type 'str'"):
         validate_str(1)
-    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
+    with pytest.raises(TypeError, match="'int' is not of type 'str'"):
         validate_str('d', 1)
-    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
+    with pytest.raises(TypeError, match="'list' is not of type 'str'"):
         validate_str([1, 2, 3])
-    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
+    with pytest.raises(TypeError, match="'list' is not of type 'str'"):
         validate_str('1', [1, 2, 3])
-    with pytest.raises(ValueError, match="expected at least one argument but got none"):
+
+    pattern = re.escape("validate_str() takes at least 1 argument but got 0")
+    with pytest.raises(TypeError, match=pattern):
         validate_str()
-    
+
 def test_validate_str_raises_no_exception():
     try:
         validate_str('a')
@@ -37,7 +40,7 @@ def test_validate_digit():
         validate_digit('!')
     with pytest.raises(ValueError, match="'1as' is not a digit"):
         validate_digit('1as')
-    with pytest.raises(ValueError, match="'' is not a digit"):
+    with pytest.raises(TypeError, match="Input cannot be empty"):
         validate_digit('')
     
 def test_validate_digit_raises_no_exception():

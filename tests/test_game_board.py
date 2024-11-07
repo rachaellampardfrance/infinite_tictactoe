@@ -14,7 +14,7 @@ def test_init():
     # test setting size value to none default sets
     #  size, index and list correctly
     game_board = GameBoard(5)
-    assert game_board.size == 5 and game_board.index == [1, 2, 3, 4, 5] and game_board.list == [     
+    assert game_board.size == 5 and game_board.list == [     
             [' ', ' ', ' ', ' ', ' '],
             [' ', ' ', ' ', ' ', ' '],
             [' ', ' ', ' ', ' ', ' '],
@@ -38,32 +38,22 @@ def test_size():
     assert game_board.size == 5    
 
     # size only accepts 3-5 range inclusive
-    with pytest.raises(ValueError, match="argument 'size' must be between 3 - 5 inclusive"):
+    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
         game_board = GameBoard(1)
-    with pytest.raises(ValueError, match="argument 'size' must be between 3 - 5 inclusive"):
+    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
         game_board = GameBoard(-1)
-    with pytest.raises(ValueError, match="argument 'size' must be between 3 - 5 inclusive"):
+    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
         game_board = GameBoard(6)
 
     # size only accepts 'int' type
-    with pytest.raises(ValueError, match="'str' is not of type 'int'"):
+    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
         game_board = GameBoard('a')
-    with pytest.raises(ValueError, match="'dict' is not of type 'int'"):
+    with pytest.raises(TypeError, match="'dict' is not of type 'int'"):
         game_board = GameBoard({})
-    with pytest.raises(ValueError, match="'list' is not of type 'int'"):
+    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
         game_board = GameBoard([1, 2])
-    with pytest.raises(ValueError, match="'tuple' is not of type 'int'"):
+    with pytest.raises(TypeError, match="'tuple' is not of type 'int'"):
         game_board = GameBoard(())
-
-
-def test_generate_index():
-    """index list is generated correctly on init"""
-    game_board = GameBoard(5)
-    assert game_board.generate_index() == [1, 2, 3, 4, 5] 
-    game_board = GameBoard(4)
-    assert game_board.generate_index() == [1, 2, 3, 4] 
-    game_board = GameBoard(3)
-    assert game_board.generate_index() == [1, 2, 3] 
 
 
 def test_generate_list():
@@ -87,28 +77,19 @@ def test_validate_board_location():
     # does not raise error: valid board location 
     game_board = GameBoard()
     try:
-        game_board.validate_board_location('1', '3')
+        game_board.validate_board_location(0, 2)
     except:
-        assert False, "'1', '3' raised an exception"
+        assert False, "ints 0, 2 raised an exception"
     # raises error: out of bounds board locations 
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_board_location('0', '1')
+        game_board.validate_board_location(-1, 0)
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_board_location('1', '4')
-    # raises error: either input value is not a digit
-    with pytest.raises(ValueError, match="'a' is not a digit"):
-        game_board.validate_board_location('a', '1')
-    with pytest.raises(ValueError, match="'!' is not a digit"):
-        game_board.validate_board_location('!', '1')
-    with pytest.raises(ValueError, match="'a' is not a digit"):
-        game_board.validate_board_location('1', 'a')
-    with pytest.raises(ValueError, match="'!' is not a digit"):
-        game_board.validate_board_location('1', '!')
-    # raises error: either input value is not of type 'str'
-    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
-        game_board.validate_board_location(1, '1')
-    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
-        game_board.validate_board_location([1, 2], '1')
+        game_board.validate_board_location(0, 3)
+    # raises error: either input value is not of type 'int'
+    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
+        game_board.validate_board_location('a', 1)
+    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
+        game_board.validate_board_location(1, [])
 
 
 def test_validate_placement():
@@ -118,9 +99,9 @@ def test_validate_placement():
     # True: valid placement
     game_board = GameBoard()
     try:
-        game_board.validate_placement('1', '1')
+        game_board.validate_placement(0, 0)
     except:
-        assert False, "'1', '1' raised an error"
+        assert False, "0, 0 'ints' raised an error"
 
     # False: occupied location
     game_board = GameBoard()
@@ -130,17 +111,17 @@ def test_validate_placement():
         [' ', ' ', ' ']
     ]
     with pytest.raises(ValueError, match="placement is already taken, try again"):
-        game_board.validate_placement('1', '1') 
+        game_board.validate_placement(0, 0) 
 
     # raises error: placement is not a board location
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_placement('0', '1')
+        game_board.validate_placement(-1, 0)
     with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_placement('1', '4')
+        game_board.validate_placement(0, 3)
 
     # raises error: passed in placements are not digits
-    with pytest.raises(ValueError, match="'a' is not a digit"):
-        game_board.validate_placement('a', '1')
+    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
+        game_board.validate_placement('a', 1)
 
 
 def test_get_list_item():
@@ -150,17 +131,15 @@ def test_get_list_item():
         [' ', 'O', ' '],
         [' ', ' ', 'X']
     ]
-    assert game_board.get_list_item('1', '1') == 'X'
-    assert game_board.get_list_item('2', '2') == 'O'
-    assert game_board.get_list_item('3', '3') == 'X'
-    assert game_board.get_list_item('3', '2') == ' '
+    assert game_board.get_list_item(0, 0) == 'X'
+    assert game_board.get_list_item(1, 1) == 'O'
+    assert game_board.get_list_item(2, 2) == 'X'
+    assert game_board.get_list_item(2, 1) == ' '
 
-    with pytest.raises(ValueError, match="'a' is not a digit"):
-        game_board.get_list_item('a', '1')
-    with pytest.raises(ValueError, match="'list' is not of type 'str'"):
-        game_board.get_list_item([1, 2, 3], '1')
-    with pytest.raises(ValueError, match="'int' is not of type 'str'"):
-        game_board.get_list_item(1, '1')
+    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
+        game_board.get_list_item('a', 1)
+    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
+        game_board.get_list_item([1, 2, 3], 1)
 
 
 
@@ -187,13 +166,13 @@ def test_str():
         [' ', ' ', ' ']
     ]
     assert game_board.__str__() == (
-        " ___________ \n"
-        "| X |   | O |\n"
-        "|---|---|---|\n"
-        "|   | O | X |\n"
-        "|---|---|---|\n"
-        "|   |   |   |\n"
-        " ‾‾‾‾‾‾‾‾‾‾‾ ")
+        " ___________ "
+        "\n| X |   | O |"
+        "\n|---|---|---|"
+        "\n|   | O | X |"
+        "\n|---|---|---|"
+        "\n|   |   |   |"
+        "\n ‾‾‾‾‾‾‾‾‾‾‾ ")
     
 
 def test_str_large():
