@@ -1,6 +1,6 @@
 """create game board and validation"""
-from validation import validate_str, validate_int, validate_positive_int
-from messages import error_message
+from helpers.validation import validate_str, validate_int, validate_positive_int
+from helpers.messages.messages import error_message
 
 class GameBoard:
     """create a game board with varied size

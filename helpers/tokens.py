@@ -1,6 +1,6 @@
 """create token class and logic"""
-from messages import error_message
-from validation import validate_str
+from helpers.messages.messages import error_message
+from helpers.validation import validate_str
 
 class Tokens:
 

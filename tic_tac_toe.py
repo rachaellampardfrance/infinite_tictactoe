@@ -1,10 +1,10 @@
 """This program runs a game of tic tac toe"""
 from random import randint
-from custom_errors import GameEndError
-from game_board import GameBoard
-from messages import error_message, user_message
-from tokens import Tokens
-from validation import validate_digit
+from helpers.custom_errors import GameEndError
+from helpers.game_board import GameBoard
+from helpers.messages.messages import error_message, user_message
+from helpers.tokens import Tokens
+from helpers.validation import validate_digit
 
 
 # for values displayed to the user

@@ -1,4 +1,4 @@
-from messages import error_message
+from helpers.messages.messages import error_message
 
 
 def validate_str(*items):
