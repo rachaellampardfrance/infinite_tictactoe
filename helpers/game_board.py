@@ -66,7 +66,7 @@ class GameBoard:
         for i in range(self.size):
             if i == self.size - 1:
                 # one shorter with space
-                bottom += f"{' ':{chr(8254)}>{self.box}} "
+                bottom += f"{' ':{chr(8254)}>{self.box}}"
             else:
                 bottom += f"{'':{chr(8254)}>{self.box}}"
         return bottom
