@@ -46,7 +46,7 @@ def create_game_board() -> object:
     created: bool = False
     while created is False:
         try:
-            game_board: object = GameBoard()
+            game_board: object = GameBoard(size=4)
             created = True
         except ValueError as e:
             value_error_message(e)
@@ -209,31 +209,56 @@ def check_for_winner(board: object) -> str | None:
     """Check for winner
     
     :returns: winners token as 'str' or None"""
-    table: list = board.list
-    winner: str = ''
-
-    # check any row is all the same token
-    for i in range(3):
-        if (table[i][0] == table[i][1] == table[i][2]
-            and not table[i][0] == ' '):
-            winner: str = table[i][0]
-
-    #  check any column is all the same token
-    for i in range(3):
-        if (table[0][i] == table[1][i] == table[2][i]
-            and not table[0][i] == ' '):
-            winner: str = table[0][i]
-
-    #  check any diagonal is all the same token
-    if (table[0][0] == table[1][1] == table[2][2]
-        and not table[0][0] == ' '):
-        winner: str = table[0][0]
-    elif (table[0][2] == table[1][1] == table[2][0]
-          and not table[1][1] == ' '):
-        winner: str = table[1][1]
+    winner: str | None = None
+    if not winner:
+        winner = check_rows_columns(board)
+    if not winner:
+        winner = check_right_diagonal(board)
+    if not winner:
+        winner = check_left_diagonal(board)
 
     if winner:
         return winner
+    return None
+
+
+def check_rows_columns(board: object) -> str | None:
+    # check any row is all the same token
+    for i in range(board.size):
+        marker = check_row_column(board, i)
+        
+        if marker:
+            return marker
+    return None
+
+def check_row_column(board: object, itr) -> str | None:
+    row_icons = set()
+    column__icons = set()
+
+    for i in range(board.size):
+        row_icons.add(board.list[itr][i])
+        column__icons.add(board.list[i][itr])
+    if len(row_icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in row_icons:
+        return row_icons.pop()
+    if len(column__icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in column__icons:
+        return column__icons.pop()
+    return None
+
+def check_right_diagonal(board: object) -> str | None:
+    icons = set()
+    for i in range(board.size):
+        icons.add(board.list[i][i])
+    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
+        return icons.pop()
+    return None
+
+def check_left_diagonal(board: object) -> str | None:
+    icons = set()
+    size = board.size - 1
+    for i in range(board.size):
+        icons.add(board.list[i][size - i])
+    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
+        return icons.pop()
     return None
 
 
