@@ -1,7 +1,7 @@
 from helpers.messages.messages import error_message, user_error_message
 
 
-def validate_str(*items):
+def validate_str(*items: any):
     """validates all items are strings"""
     if not is_items(*items):
         raise TypeError(error_message("1"))
@@ -13,7 +13,7 @@ def validate_str(*items):
             raise TypeError(user_error_message("8"))
 
 
-def validate_digit(*items):
+def validate_digit(*items: any):
     """validates all items are strings and digits"""
     validate_str(*items)
 
@@ -22,7 +22,7 @@ def validate_digit(*items):
             raise ValueError(user_error_message("1", item))
 
 
-def validate_int(*items):
+def validate_int(*items: any):
     """validates all items are ints"""
     if not is_items(*items):
         raise TypeError(error_message("3"))
@@ -32,7 +32,7 @@ def validate_int(*items):
             raise TypeError(error_message("4", type(item).__name__))
 
 
-def validate_positive_int(*items):
+def validate_positive_int(*items: any):
     """validates all items are ints and positive"""
     if not is_items(*items):
         raise TypeError(error_message("11"))
@@ -44,7 +44,7 @@ def validate_positive_int(*items):
             raise ValueError(error_message("12", item))
 
 
-def is_items(*items):
+def is_items(*items: any) -> bool:
     if not items:
         return False
     return True
