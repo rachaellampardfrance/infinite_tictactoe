@@ -70,7 +70,7 @@ def set_tokens() -> object:
     created: bool = False
     while created is False:
         try:
-            player_tokens: object = Tokens(get_user_token_choice())
+            player_tokens: object = Tokens(get_player1_token_choice())
             created = True
 
         except ValueError as e:
@@ -81,7 +81,7 @@ def set_tokens() -> object:
     return player_tokens
 
 
-def get_user_token_choice() -> str:
+def get_player1_token_choice() -> str:
     """get user token choice from available tokens
     
     :returns: 'str' of user token choice"""
@@ -126,7 +126,7 @@ def user_placement(board: object, tokens: object) -> object:
         try:
             validate_digit(choice["row"], choice["column"])
             choice: dict = convert_user_input(choice)
-            return try_place(board, choice, tokens.user_token)
+            return try_place(board, choice, tokens.player1_token)
         except ValueError as e:
             value_error_message(e)
         except TypeError as e:
@@ -178,7 +178,7 @@ def bot_turn(board: object, tokens: object) -> object:
     while True:
         choice: dict = get_easy_bot_choice()
         try:
-            return try_place(board, choice, tokens.bot_token)
+            return try_place(board, choice, tokens.player2_token)
         except ValueError as e:
             value_error_message(error_message("7", e))
         except TypeError as e:
