@@ -15,9 +15,9 @@ ERROR_MESSAGES = {
     "12": "{} is not a positive integer",
 }
 
-def error_message(message_code, *details):
-    """Formatted Error codes"""
-    message = ERROR_MESSAGES.get(message_code, "Unknown Message")
+def error_message(message_code: str, *details: any) -> str:
+    """:returns: Formatted Error message from code"""
+    message: str = ERROR_MESSAGES.get(message_code, "Unknown Message")
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
@@ -35,9 +35,9 @@ USER_MESSAGES = {
     "6": "Closing...",
 }
 
-def user_message(message_code, *details):
-    """Formatted Error codes"""
-    message = USER_MESSAGES.get(message_code, "Unknown Message")
+def user_message(message_code: str, *details: any) -> str:
+    """:returns: Formatted user message from code"""
+    message: str = USER_MESSAGES.get(message_code, "Unknown Message")
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
@@ -57,9 +57,9 @@ USER_ERROR_MESSAGES = {
     "8": "Input cannot be empty"
 }
 
-def user_error_message(message_code, *details):
-    """Formatted Error codes"""
-    message = USER_ERROR_MESSAGES.get(message_code, "Unknown Message")
+def user_error_message(message_code: str, *details: any) -> str:
+    """:returns: Formatted user error message from code"""
+    message: str = USER_ERROR_MESSAGES.get(message_code, "Unknown Message")
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
