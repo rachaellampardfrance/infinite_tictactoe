@@ -8,14 +8,14 @@ from helpers.validation import validate_digit
 
 
 # for values displayed to the user
-DISPLAY_MIN_RANGE = 1
-DISPLAY_MAX_RANGE = 0
+DISPLAY_MIN_RANGE: int = 1
+DISPLAY_MAX_RANGE: int = 0
 # for real values for indexing GameBoard arrays
-MIN_RANGE = 0
-MAX_RANGE = 0
+MIN_RANGE: int = 0
+MAX_RANGE: int = 0
 
 
-def main():
+def main() -> None:
     try:
         """tic tac toe game creation and game loop"""
         game_board, player_tokens = init_game()
@@ -29,20 +29,24 @@ def main():
         exit_message()
 
 
-def init_game():
-    """create game board and set player tokens"""
-    board = create_game_board()
+def init_game() -> tuple:
+    """create game board and set player tokens
+    
+    :returns: tuple of GameBoard and Tokens objects"""
+    board: object = create_game_board()
     set_max_ranges(board)
-    tokens = set_tokens()
+    tokens: object = set_tokens()
     return board, tokens
 
 
-def create_game_board():
-    """create GameBoard object"""
-    created = False
+def create_game_board() -> object:
+    """create GameBoard object
+    
+    :returns: new GameBoard object"""
+    created: bool = False
     while created is False:
         try:
-            game_board = GameBoard()
+            game_board: object = GameBoard()
             created = True
         except ValueError as e:
             value_error_message(e)
@@ -51,20 +55,22 @@ def create_game_board():
     return game_board
 
 
-def set_max_ranges(board):
-    """set ranges by board size"""
+def set_max_ranges(board: object) -> None:
+    """set global ranges by GameBoard object instance size"""
     global MAX_RANGE, DISPLAY_MAX_RANGE
 
     MAX_RANGE = board.size - 1
     DISPLAY_MAX_RANGE = board.size
 
 
-def set_tokens():
-    """Create token object with associated player tokens"""
-    created = False
+def set_tokens() -> object:
+    """Create token object with associated player tokens
+    
+    :returns: Token object with assigned player tokens"""
+    created: bool = False
     while created is False:
         try:
-            player_tokens = Tokens(get_user_token_choice())
+            player_tokens: object = Tokens(get_user_token_choice())
             created = True
 
         except ValueError as e:
@@ -75,25 +81,26 @@ def set_tokens():
     return player_tokens
 
 
-def get_user_token_choice():
-    tokens = Tokens.PLAYER_TOKENS
+def get_user_token_choice() -> str:
+    """get user token choice from available tokens
+    
+    :returns: 'str' of user token choice"""
+    tokens: object = Tokens.PLAYER_TOKENS
     return input(user_message("1", tokens[0], tokens[1])).strip().upper()
 
 
 
-def print_game(board, tokens):
+def print_game(board: object, tokens: object) -> None:
     """print player tokens and GameBoard objects"""
     print(tokens)
     print(board)
 
 
-def game_loop(board, tokens):
+def game_loop(board: object, tokens: object) -> None:
     """loop turns, printing board, 
-    win and stalemate checks, and game on choice
-    """
-
+    win and stalemate checks, and game on choice"""
     try:
-        game_on = True
+        game_on: bool = True
         while game_on:
             board = user_placement(board, tokens)
             print_game(board, tokens)
@@ -105,16 +112,20 @@ def game_loop(board, tokens):
 
     except GameEndError as e:
         game_end_error_message(e)
-        return
+        return None
 
 
-def user_placement(board, tokens):
-    """get user placement choice and try place"""
+def user_placement(board: object, tokens: object) -> object:
+    """get user placement choice and try place
+    
+    :param board: GameBoard object
+    :param tokens: Token object
+    :returns: the GameBoard object with placed token"""
     while True:
-        choice = get_user_row_column()
+        choice: dict = get_user_row_column()
         try:
             validate_digit(choice["row"], choice["column"])
-            choice = convert_user_input(choice)
+            choice: dict = convert_user_input(choice)
             return try_place(board, choice, tokens.user_token)
         except ValueError as e:
             value_error_message(e)
@@ -122,10 +133,12 @@ def user_placement(board, tokens):
             type_error_message(e)
 
 
-def get_user_row_column():
-    """get user row and column placement return dict"""
-    row = input(user_message("2", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE))
-    column = input(user_message("3", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE))
+def get_user_row_column() -> dict:
+    """get user row and column placement choice
+    
+    :returns: dict with 'row', 'column' keys and 'str' values"""
+    row: str = input(user_message("2", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
+    column: str = input(user_message("3", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
     choice = {
         "row": row,
         "column": column
@@ -133,51 +146,58 @@ def get_user_row_column():
     return choice
 
 
-def convert_user_input(choice):
+def convert_user_input(choice: dict) -> dict:
+    """convert user choices from str to int
+    
+    :returns: dict with 'row', 'column' keys and 'int' values"""
     choice["row"] = int(choice["row"]) - 1
     choice["column"] = int(choice["column"]) - 1
     return choice
 
 
-def try_place(board, location, token):
+def try_place(board: object, location: dict, token: str) -> object:
     """try to place token at location 
 
-    keyword arguments:
-    board -- a GameBoard object
-    location -- a dict containing 
-        {"row": a, "column": b} key variables
-    token -- must be in Token.PLAYER_TOKENS
+    :param board: A GameBoard object
+    :param location: A dict containing 
+        {"row": int, "column": int} key variables
+    :param token: Must be in Token.PLAYER_TOKENS
+    :returns: The input GameBoard object with placed token
     """
-    row = location["row"]
-    column = location["column"]
+    row: int = location["row"]
+    column: int = location["column"]
     board.validate_placement(row, column)
     board.list[row][column] = token
     return board
 
 
-def bot_turn(board, tokens):
-    """bot placement"""
+def bot_turn(board: object, tokens: object) -> object:
+    """computer token placement
+    
+    :returns: the GameBoard object with computers token placement"""
     while True:
-        index_choice = get_easy_bot_choice()
+        choice: dict = get_easy_bot_choice()
         try:
-            return try_place(board, index_choice, tokens.bot_token)
+            return try_place(board, choice, tokens.bot_token)
         except ValueError as e:
             value_error_message(error_message("7", e))
         except TypeError as e:
             type_error_message(error_message("7", e))
 
 
-def get_easy_bot_choice():
-    """generate random choice row/column from global ranges"""
-    row = randint(MIN_RANGE, MAX_RANGE)
-    column = randint(MIN_RANGE, MAX_RANGE)
+def get_easy_bot_choice() -> dict:
+    """generate random choice row/column from global ranges
+    
+    :returns: dict with 'row', 'column' keys and 'int' values"""
+    row: int = randint(MIN_RANGE, MAX_RANGE)
+    column: int = randint(MIN_RANGE, MAX_RANGE)
     return {"row": row, "column": column}
 
 
 
-def validate_game_on(board):
-    """player turn"""
-    winner = check_for_winner(board)
+def validate_game_on(board: object) -> None:
+    """winner or stalemate raises game end"""
+    winner: str = check_for_winner(board)
     if winner:
         raise GameEndError(user_error_message("4", winner))
     
@@ -185,39 +205,43 @@ def validate_game_on(board):
         raise GameEndError(user_error_message("5"))
 
 
-def check_for_winner(board):
-    """Check for winner"""
-    table = board.list
-    winner = ''
+def check_for_winner(board: object) -> str | None:
+    """Check for winner
+    
+    :returns: winners token as 'str' or None"""
+    table: list = board.list
+    winner: str = ''
 
     # check any row is all the same token
     for i in range(3):
         if (table[i][0] == table[i][1] == table[i][2]
             and not table[i][0] == ' '):
-            winner = table[i][0]
+            winner: str = table[i][0]
 
     #  check any column is all the same token
     for i in range(3):
         if (table[0][i] == table[1][i] == table[2][i]
             and not table[0][i] == ' '):
-            winner = table[0][i]
+            winner: str = table[0][i]
 
     #  check any diagonal is all the same token
     if (table[0][0] == table[1][1] == table[2][2]
         and not table[0][0] == ' '):
-        winner = table[0][0]
+        winner: str = table[0][0]
     elif (table[0][2] == table[1][1] == table[2][0]
           and not table[1][1] == ' '):
-        winner = table[1][1]
+        winner: str = table[1][1]
 
     if winner:
         return winner
     return None
 
 
-def is_stalemate(board):
-    """check if stalemate"""
-    table = board.list
+def is_stalemate(board: object) -> bool:
+    """check if stalemate
+    
+    :returns: True if board is full, False if spaces left"""
+    table: list = board.list
 
     for i in range(3):
         if table[i][0] == ' ' or table[i][1] == ' ' or table[i][2] == ' ':
@@ -225,10 +249,12 @@ def is_stalemate(board):
     return True
 
 
-def game_on_choice():
-    """check if user wants to continue playing"""
+def game_on_choice() -> bool:
+    """check if user wants to continue playing
+    
+    :returns: True if users wishes to continue, False if not"""
     while True:
-        choice = input(user_message("4")).upper()
+        choice: str = input(user_message("4")).strip().upper()
         try:
             validate_game_on_choice(choice)
             if choice == "Y":
@@ -239,25 +265,26 @@ def game_on_choice():
             value_error_message(e)
 
 
-def validate_game_on_choice(choice):
-    valid = ['Y', 'N']
+def validate_game_on_choice(choice: str) -> None:
+    """raise error if choice is not valid"""
+    valid: list = ['Y', 'N']
     if not choice in valid:
         raise ValueError(user_message("5", choice))
 
-def show_error_message(e):
+def show_error_message(e: str) -> None:
     """format + show error message"""
     print(error_message("8", e))
 
-def value_error_message(e):
+def value_error_message(e: str) -> None:
     print(error_message("9", e))
 
-def type_error_message(e):
+def type_error_message(e: str) -> None:
     print(error_message("10", e))
 
-def game_end_error_message(e):
+def game_end_error_message(e: str) -> None:
     print(user_error_message("6", e))
 
-def exit_message():
+def exit_message() -> None:
     print(user_message("6"))
 
 
