@@ -46,7 +46,7 @@ def create_game_board() -> object:
     created: bool = False
     while created is False:
         try:
-            game_board: object = GameBoard(size=4)
+            game_board: object = GameBoard()
             created = True
         except ValueError as e:
             value_error_message(e)
@@ -196,42 +196,27 @@ def get_easy_bot_choice() -> dict:
 
 
 def validate_game_on(board: object) -> None:
-    """winner or stalemate raises game end"""
-    winner: str = check_for_winner(board)
-    if winner:
-        raise GameEndError(user_error_message("4", winner))
-    
-    if is_stalemate(board):
-        raise GameEndError(user_error_message("5"))
+    """bubbles winner or stalemate GameEndError"""
+    check_for_winner(board)
+    check_for_stalemate(board)
 
 
-def check_for_winner(board: object) -> str | None:
-    """Check for winner
-    
-    :returns: winners token as 'str' or None"""
-    winner: str | None = None
-    if not winner:
-        winner = check_rows_columns(board)
-    if not winner:
-        winner = check_right_diagonal(board)
-    if not winner:
-        winner = check_left_diagonal(board)
+def check_for_winner(board: object) -> None:
+    """bubble GameEndError if winner found"""
+    check_rows_columns(board)
+    check_top_right_diagonal(board)
+    check_bottom_right_diagonal(board)
 
-    if winner:
-        return winner
-    return None
-
-
-def check_rows_columns(board: object) -> str | None:
-    # check any row is all the same token
+def check_rows_columns(board: object) -> None:
+    """bubble GameEndError if winner found"""
     for i in range(board.size):
-        marker = check_row_column(board, i)
-        
-        if marker:
-            return marker
-    return None
+        check_row_column(board, i)
 
-def check_row_column(board: object, itr) -> str | None:
+def check_row_column(board: object, itr) -> None:
+    """raises GameEndError if any row or column is all the same token
+    
+    :param itr: 'int' for iteration
+    """
     row_icons = set()
     column__icons = set()
 
@@ -239,39 +224,39 @@ def check_row_column(board: object, itr) -> str | None:
         row_icons.add(board.list[itr][i])
         column__icons.add(board.list[i][itr])
     if len(row_icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in row_icons:
-        return row_icons.pop()
+        raise GameEndError(user_error_message("4", row_icons.pop()))
     if len(column__icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in column__icons:
-        return column__icons.pop()
-    return None
+        raise GameEndError(user_error_message("4", column__icons.pop()))
 
-def check_right_diagonal(board: object) -> str | None:
+def check_top_right_diagonal(board: object) -> None:
+    """raises GameEndError if top right down diagonal is all the same token"""
     icons = set()
     for i in range(board.size):
         icons.add(board.list[i][i])
     if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        return icons.pop()
-    return None
+        raise GameEndError(user_error_message("4", icons.pop()))
 
-def check_left_diagonal(board: object) -> str | None:
+def check_bottom_right_diagonal(board: object) -> None:
+    """raises GameEndError if bottom right up diagonal is all the same token"""
     icons = set()
     size = board.size - 1
     for i in range(board.size):
         icons.add(board.list[i][size - i])
     if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        return icons.pop()
-    return None
+        raise GameEndError(user_error_message("4", icons.pop()))
 
 
-def is_stalemate(board: object) -> bool:
-    """check if stalemate
-    
-    :returns: True if board is full, False if spaces left"""
+def check_for_stalemate(board: object) -> None:
+    """raises GameEndError if stalemate occurs"""
     table: list = board.list
+    free = None
 
     for i in range(3):
         if table[i][0] == ' ' or table[i][1] == ' ' or table[i][2] == ' ':
-            return False
-    return True
+            free = True
+
+    if not free:
+            raise GameEndError(user_error_message("5"))
 
 
 def game_on_choice() -> bool:
