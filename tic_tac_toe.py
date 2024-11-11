@@ -2,7 +2,8 @@
 from random import randint
 from helpers.custom_errors import GameEndError
 from helpers.game_board import GameBoard
-from helpers.messages.messages import error_message, user_message, user_error_message
+from helpers.game_on import validate_game_on
+from helpers.messages.messages import error_message, user_error_message, user_message
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit
 
@@ -192,71 +193,6 @@ def get_easy_bot_choice() -> dict:
     row: int = randint(MIN_RANGE, MAX_RANGE)
     column: int = randint(MIN_RANGE, MAX_RANGE)
     return {"row": row, "column": column}
-
-
-
-def validate_game_on(board: object) -> None:
-    """bubbles winner or stalemate GameEndError"""
-    check_for_winner(board)
-    check_for_stalemate(board)
-
-
-def check_for_winner(board: object) -> None:
-    """bubble GameEndError if winner found"""
-    check_rows_columns(board)
-    check_top_right_diagonal(board)
-    check_bottom_right_diagonal(board)
-
-def check_rows_columns(board: object) -> None:
-    """bubble GameEndError if winner found"""
-    for i in range(board.size):
-        check_row_column(board, i)
-
-def check_row_column(board: object, itr) -> None:
-    """raises GameEndError if any row or column is all the same token
-    
-    :param itr: 'int' for iteration
-    """
-    row_icons = set()
-    column__icons = set()
-
-    for i in range(board.size):
-        row_icons.add(board.list[itr][i])
-        column__icons.add(board.list[i][itr])
-    if len(row_icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in row_icons:
-        raise GameEndError(user_error_message("4", row_icons.pop()))
-    if len(column__icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in column__icons:
-        raise GameEndError(user_error_message("4", column__icons.pop()))
-
-def check_top_right_diagonal(board: object) -> None:
-    """raises GameEndError if top right down diagonal is all the same token"""
-    icons = set()
-    for i in range(board.size):
-        icons.add(board.list[i][i])
-    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        raise GameEndError(user_error_message("4", icons.pop()))
-
-def check_bottom_right_diagonal(board: object) -> None:
-    """raises GameEndError if bottom right up diagonal is all the same token"""
-    icons = set()
-    size = board.size - 1
-    for i in range(board.size):
-        icons.add(board.list[i][size - i])
-    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        raise GameEndError(user_error_message("4", icons.pop()))
-
-
-def check_for_stalemate(board: object) -> None:
-    """raises GameEndError if stalemate occurs"""
-    table: list = board.list
-    free = None
-
-    for i in range(3):
-        if table[i][0] == ' ' or table[i][1] == ' ' or table[i][2] == ' ':
-            free = True
-
-    if not free:
-            raise GameEndError(user_error_message("5"))
 
 
 def game_on_choice() -> bool:
