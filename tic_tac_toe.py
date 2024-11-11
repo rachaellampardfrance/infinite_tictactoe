@@ -1,8 +1,7 @@
 """This program runs a game of tic tac toe"""
 from random import randint
 from helpers.custom_errors import GameEndError
-from helpers.game_board import GameBoard
-from helpers.game_on import validate_game_on
+from helpers.tic_tac_toe_board import TicTacToeBoard
 from helpers.messages.messages import error_message, user_error_message, user_message
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit
@@ -11,7 +10,7 @@ from helpers.validation import validate_digit
 # for values displayed to the user
 DISPLAY_MIN_RANGE: int = 1
 DISPLAY_MAX_RANGE: int = 0
-# for real values for indexing GameBoard arrays
+# for real values for indexing TicTacToeBoard arrays
 MIN_RANGE: int = 0
 MAX_RANGE: int = 0
 
@@ -33,7 +32,7 @@ def main() -> None:
 def init_game() -> tuple:
     """create game board and set player tokens
     
-    :returns: tuple of GameBoard and Tokens objects"""
+    :returns: tuple of TicTacToeBoard and Tokens objects"""
     board: object = create_game_board()
     set_max_ranges(board)
     tokens: object = set_tokens()
@@ -41,13 +40,13 @@ def init_game() -> tuple:
 
 
 def create_game_board() -> object:
-    """create GameBoard object
+    """create TicTacToeBoard object
     
-    :returns: new GameBoard object"""
+    :returns: new TicTacToeBoard object"""
     created: bool = False
     while created is False:
         try:
-            game_board: object = GameBoard()
+            game_board: object = TicTacToeBoard()
             created = True
         except ValueError as e:
             value_error_message(e)
@@ -57,7 +56,7 @@ def create_game_board() -> object:
 
 
 def set_max_ranges(board: object) -> None:
-    """set global ranges by GameBoard object instance size"""
+    """set global ranges by TicTacToeBoard object instance size"""
     global MAX_RANGE, DISPLAY_MAX_RANGE
 
     MAX_RANGE = board.size - 1
@@ -92,7 +91,7 @@ def get_player1_token_choice() -> str:
 
 
 def print_game(board: object, tokens: object) -> None:
-    """print player tokens and GameBoard objects"""
+    """print player tokens and TicTacToeBoard objects"""
     print(tokens)
     print(board)
 
@@ -105,10 +104,10 @@ def game_loop(board: object, tokens: object) -> None:
         while game_on:
             board = user_placement(board, tokens)
             print_game(board, tokens)
-            validate_game_on(board)
+            board.validate_game_on()
             board = bot_turn(board, tokens)
             print_game(board, tokens)
-            validate_game_on(board)
+            board.validate_game_on()
             game_on = game_on_choice()
 
     except GameEndError as e:
@@ -119,9 +118,9 @@ def game_loop(board: object, tokens: object) -> None:
 def user_placement(board: object, tokens: object) -> object:
     """get user placement choice and try place
     
-    :param board: GameBoard object
+    :param board: TicTacToeBoard object
     :param tokens: Token object
-    :returns: the GameBoard object with placed token"""
+    :returns: the TicTacToeBoard object with placed token"""
     while True:
         choice: dict = get_user_row_column()
         try:
@@ -159,11 +158,11 @@ def convert_user_input(choice: dict) -> dict:
 def try_place(board: object, location: dict, token: str) -> object:
     """try to place token at location 
 
-    :param board: A GameBoard object
+    :param board: A TicTacToeBoard object
     :param location: A dict containing 
         {"row": int, "column": int} key variables
     :param token: Must be in Token.PLAYER_TOKENS
-    :returns: The input GameBoard object with placed token
+    :returns: The input TicTacToeBoard object with placed token
     """
     row: int = location["row"]
     column: int = location["column"]
@@ -175,7 +174,7 @@ def try_place(board: object, location: dict, token: str) -> object:
 def bot_turn(board: object, tokens: object) -> object:
     """computer token placement
     
-    :returns: the GameBoard object with computers token placement"""
+    :returns: the TicTacToeBoard object with computers token placement"""
     while True:
         choice: dict = get_easy_bot_choice()
         try:
