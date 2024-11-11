@@ -1,6 +1,5 @@
 """create token class and logic"""
 from helpers.messages.messages import user_error_message
-from helpers.validation import validate_str
 
 class Tokens:
 
@@ -17,7 +16,7 @@ class Tokens:
     
 
     def get_player2_token(self) -> str:
-        """set player2 token dependant on player1 token
+        """set player2 token dependant of player1 token
         
         :returns: 'str' of player2 token"""
         self.valid_token(self.player1_token)
@@ -43,7 +42,6 @@ class Tokens:
         return self._player1_token
     @player1_token.setter
     def player1_token(self, player1_token: str) -> None:
-        validate_str(player1_token)
         Tokens.valid_token(player1_token)
          
         self._player1_token = player1_token
