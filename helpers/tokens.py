@@ -8,7 +8,7 @@ class Tokens:
 
     def __init__(self, player1_token: str ='X') -> object:
         self.player1_token: str = player1_token
-        self.player2_token: str = self.player2_token()
+        self.player2_token: str = self.get_player2_token()
 
     def __str__(self) -> str:
         tokens = (f"Player: {self.player1_token}\n"
@@ -16,7 +16,7 @@ class Tokens:
         return tokens
     
 
-    def player2_token(self) -> str:
+    def get_player2_token(self) -> str:
         """set player2 token dependant on player1 token
         
         :returns: 'str' of player2 token"""
