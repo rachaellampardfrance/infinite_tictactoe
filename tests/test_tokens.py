@@ -6,20 +6,20 @@ import pytest
 def test_init():
     """correct player and bot tokens set"""
     tokens = Tokens('X') 
-    assert tokens.user_token == 'X' and tokens.bot_token == 'O'
+    assert tokens.player1_token == 'X' and tokens.player2_token == 'O'
     tokens = Tokens('O')
-    assert tokens.user_token == 'O' and tokens.bot_token == 'X'
+    assert tokens.player1_token == 'O' and tokens.player2_token == 'X'
     tokens = Tokens()
-    assert tokens.user_token == 'X' and tokens.bot_token == 'O'
+    assert tokens.player1_token == 'X' and tokens.player2_token == 'O'
 
 
 def test_player_token():
     """player token sets token == the argument"""
     # correct player token assigned 
     tokens = Tokens('X')
-    assert tokens.user_token == 'X'
+    assert tokens.player1_token == 'X'
     tokens = Tokens('O')
-    assert tokens.user_token == 'O'
+    assert tokens.player1_token == 'O'
 
     # raises errors: invalid player token
     with pytest.raises(ValueError, match="'1' is not a valid player token. Valid tokens X, O"):
@@ -35,11 +35,11 @@ def test_get_bot_token():
 
     # correct bot token assignment
     tokens = Tokens()
-    assert tokens.bot_token == 'O'
+    assert tokens.player2_token == 'O'
     tokens = Tokens('X')
-    assert tokens.bot_token == 'O'
+    assert tokens.player2_token == 'O'
     tokens = Tokens('O')
-    assert tokens.bot_token == 'X'
+    assert tokens.player2_token == 'X'
 
 def test_valid_token():
     
