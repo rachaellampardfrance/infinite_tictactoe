@@ -2,7 +2,8 @@
 from random import randint
 from helpers.custom_errors import GameEndError
 from helpers.game_board import GameBoard
-from helpers.messages.messages import error_message, user_message, user_error_message
+from helpers.game_on import validate_game_on
+from helpers.messages.messages import error_message, user_error_message, user_message
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit
 
@@ -70,7 +71,7 @@ def set_tokens() -> object:
     created: bool = False
     while created is False:
         try:
-            player_tokens: object = Tokens(get_user_token_choice())
+            player_tokens: object = Tokens(get_player1_token_choice())
             created = True
 
         except ValueError as e:
@@ -81,7 +82,7 @@ def set_tokens() -> object:
     return player_tokens
 
 
-def get_user_token_choice() -> str:
+def get_player1_token_choice() -> str:
     """get user token choice from available tokens
     
     :returns: 'str' of user token choice"""
@@ -126,7 +127,7 @@ def user_placement(board: object, tokens: object) -> object:
         try:
             validate_digit(choice["row"], choice["column"])
             choice: dict = convert_user_input(choice)
-            return try_place(board, choice, tokens.user_token)
+            return try_place(board, choice, tokens.player1_token)
         except ValueError as e:
             value_error_message(e)
         except TypeError as e:
@@ -178,7 +179,7 @@ def bot_turn(board: object, tokens: object) -> object:
     while True:
         choice: dict = get_easy_bot_choice()
         try:
-            return try_place(board, choice, tokens.bot_token)
+            return try_place(board, choice, tokens.player2_token)
         except ValueError as e:
             value_error_message(error_message("7", e))
         except TypeError as e:
@@ -192,61 +193,6 @@ def get_easy_bot_choice() -> dict:
     row: int = randint(MIN_RANGE, MAX_RANGE)
     column: int = randint(MIN_RANGE, MAX_RANGE)
     return {"row": row, "column": column}
-
-
-
-def validate_game_on(board: object) -> None:
-    """winner or stalemate raises game end"""
-    winner: str = check_for_winner(board)
-    if winner:
-        raise GameEndError(user_error_message("4", winner))
-    
-    if is_stalemate(board):
-        raise GameEndError(user_error_message("5"))
-
-
-def check_for_winner(board: object) -> str | None:
-    """Check for winner
-    
-    :returns: winners token as 'str' or None"""
-    table: list = board.list
-    winner: str = ''
-
-    # check any row is all the same token
-    for i in range(3):
-        if (table[i][0] == table[i][1] == table[i][2]
-            and not table[i][0] == ' '):
-            winner: str = table[i][0]
-
-    #  check any column is all the same token
-    for i in range(3):
-        if (table[0][i] == table[1][i] == table[2][i]
-            and not table[0][i] == ' '):
-            winner: str = table[0][i]
-
-    #  check any diagonal is all the same token
-    if (table[0][0] == table[1][1] == table[2][2]
-        and not table[0][0] == ' '):
-        winner: str = table[0][0]
-    elif (table[0][2] == table[1][1] == table[2][0]
-          and not table[1][1] == ' '):
-        winner: str = table[1][1]
-
-    if winner:
-        return winner
-    return None
-
-
-def is_stalemate(board: object) -> bool:
-    """check if stalemate
-    
-    :returns: True if board is full, False if spaces left"""
-    table: list = board.list
-
-    for i in range(3):
-        if table[i][0] == ' ' or table[i][1] == ' ' or table[i][2] == ' ':
-            return False
-    return True
 
 
 def game_on_choice() -> bool:

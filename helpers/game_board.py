@@ -124,7 +124,7 @@ class GameBoard:
 
 
     @classmethod
-    def is_default_list_item(cls, item: str) -> str:
+    def is_default_list_item(cls, item: str) -> bool:
         """return true/false"""
         validate_str(item)
 

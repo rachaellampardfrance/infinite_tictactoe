@@ -6,23 +6,23 @@ class Tokens:
 
     PLAYER_TOKENS: list = ['X', 'O']
 
-    def __init__(self, user_token: str ='X') -> object:
-        self.user_token: str = user_token
-        self.bot_token: str = self.get_bot_token()
+    def __init__(self, player1_token: str ='X') -> object:
+        self.player1_token: str = player1_token
+        self.player2_token: str = self.player2_token()
 
     def __str__(self) -> str:
-        tokens = (f"Player: {self.user_token}\n"
-        f"Computer: {self.bot_token}")
+        tokens = (f"Player: {self.player1_token}\n"
+        f"Computer: {self.player2_token}")
         return tokens
     
 
-    def get_bot_token(self) -> str:
+    def player2_token(self) -> str:
         """set player2 token dependant on player1 token
         
         :returns: 'str' of player2 token"""
-        self.valid_token(self.user_token)
+        self.valid_token(self.player1_token)
 
-        if self.user_token == Tokens.PLAYER_TOKENS[0]:
+        if self.player1_token == Tokens.PLAYER_TOKENS[0]:
             return Tokens.PLAYER_TOKENS[1]
         return Tokens.PLAYER_TOKENS[0]
         
@@ -39,11 +39,11 @@ class Tokens:
 
 
     @property
-    def user_token(self) -> str:
-        return self._user_token
-    @user_token.setter
-    def user_token(self, user_token: str) -> None:
-        validate_str(user_token)
-        Tokens.valid_token(user_token)
+    def player1_token(self) -> str:
+        return self._player1_token
+    @player1_token.setter
+    def player1_token(self, player1_token: str) -> None:
+        validate_str(player1_token)
+        Tokens.valid_token(player1_token)
          
-        self._user_token = user_token
+        self._player1_token = player1_token
