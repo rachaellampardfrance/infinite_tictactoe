@@ -5,13 +5,14 @@ class Tokens:
 
     PLAYER_TOKENS: list = ['X', 'O']
 
-    def __init__(self, player1_token: str ='X') -> object:
+    def __init__(self, player1_token: str ='X', player2 = 'Player 2') -> object:
         self.player1_token: str = player1_token
         self.player2_token: str = self.get_player2_token()
+        self.users: dict = {'1': 'Player 1', '2': player2}
 
     def __str__(self) -> str:
-        tokens = (f"Player: {self.player1_token}\n"
-        f"Computer: {self.player2_token}")
+        tokens = (f"{self.users['1']}: {self.player1_token}\n"
+        f"{self.users['2']}: {self.player2_token}")
         return tokens
     
 

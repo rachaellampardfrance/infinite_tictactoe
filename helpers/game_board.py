@@ -27,6 +27,7 @@ class GameBoard:
         self.size: int = size
         self.list: list = self._generate_list()
         self.box: int = box_size
+        self.default_item: str = GameBoard.DEFAULT_LIST_ITEM
 
 
     def __str__(self) -> str:

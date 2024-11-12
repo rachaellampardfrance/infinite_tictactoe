@@ -2,7 +2,7 @@
 
 ERROR_MESSAGES = {
     "1": "'size' must be between {} - {} inclusive",
-    "6": "ERROR: error_message() was given {} Error Arguments but was expecting {}.",
+    "6": "error_message() was given {} Error Arguments but was expecting {}.",
     "3": "{} must be a positive integer",
 }
 
@@ -19,8 +19,8 @@ def error_message(message_code: str, *details: any) -> str:
 
 USER_MESSAGES = {
     "1": "Choose {} or {}: ",
-    "2": "select row location {}-{}: ",
-    "3": "select column location {}-{}: ",
+    "2": "{} select row location {}-{}: ",
+    "3": "{} select column location {}-{}: ",
     "4": "Continue playing Y/N? ",
     "5": "{} is not a valid option",
     "6": "Closing...",

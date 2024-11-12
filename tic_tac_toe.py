@@ -18,22 +18,24 @@ MAX_RANGE: int = 0
 def main() -> None:
     try:
         """tic tac toe game creation and game loop"""
-        game_board, player_tokens = init_game()
+        players = get_players()
+        game_board, player_tokens = init_game(players)
         print_game(game_board, player_tokens)
 
         # game loop
-        game_loop(game_board, player_tokens)
+        game_loop(game_board, player_tokens, players)
     except KeyboardInterrupt:
         print("")
     finally:
         exit_message()
 
 
-def init_game() -> tuple:
+
+def init_game(players: int) -> tuple:
     """:returns: tuple of TicTacToeBoard and Tokens objects"""
     board: object = create_game_board()
     set_max_ranges(board)
-    tokens: object = set_tokens()
+    tokens: object = set_tokens(players)
     return board, tokens
 
 
@@ -51,18 +53,20 @@ def set_max_ranges(board: object) -> None:
     DISPLAY_MAX_RANGE = board.size
 
 
-def set_tokens() -> object:
+def set_tokens(players: int) -> object:
     """:returns: Token object with assigned player tokens"""
-    created: bool = False
-    while created is False:
+    while True:
         try:
-            player_tokens: object = Tokens(get_player1_token_choice())
-            created = True
+            if not players == 2:
+                player_tokens: object = Tokens(get_player1_token_choice(), 'Computer')
+                
+            else:
+                player_tokens: object = Tokens(get_player1_token_choice())
+
+            return player_tokens
 
         except ValueError as e:
             show_message(e)
-
-    return player_tokens
 
 
 def get_player1_token_choice() -> str:
@@ -74,22 +78,41 @@ def get_player1_token_choice() -> str:
 
 
 
+def get_players():
+    options = ['2P', 'C']
+
+    while True:
+        choice = input("2 player or play against the computer? 2P / C : ").strip().upper()
+
+        if choice == options[0]:
+            return 2
+        elif choice == options[1]:
+            return 1
+
+
+
 def print_game(board: object, tokens: object) -> None:
     """print player tokens and TicTacToeBoard objects"""
     print(tokens)
     print(board)
 
 
-def game_loop(board: object, tokens: object) -> None:
+
+def game_loop(board: object, tokens: object, players: int) -> None:
     """loop turns, printing board, 
     win and stalemate checks, and game on choice"""
     try:
         game_on: bool = True
         while game_on:
-            board = user_placement(board, tokens)
+            board = user_placement(board, tokens.player1_token, "Player 1: ")
             print_game(board, tokens)
             board.validate_game_on()
-            board = bot_turn(board, tokens)
+
+            if players == 2:
+                board = user_placement(board, tokens.player2_token, "Player 2: ")
+            else:
+                board = bot_turn(board, tokens)
+
             print_game(board, tokens)
             board.validate_game_on()
             game_on = game_on_choice()
@@ -99,7 +122,7 @@ def game_loop(board: object, tokens: object) -> None:
         return None
 
 
-def user_placement(board: object, tokens: object) -> object:
+def user_placement(board: object, token: str, user: str) -> object:
     """get user placement choice and try place
     
     :param board: TicTacToeBoard object
@@ -107,7 +130,7 @@ def user_placement(board: object, tokens: object) -> object:
     :returns: the TicTacToeBoard object with placed token"""
     while True:
         try:
-            choice: dict = get_user_row_column()
+            choice: dict = get_user_row_column(user)
 
         except ValueError as e:
             show_message(e)
@@ -116,20 +139,20 @@ def user_placement(board: object, tokens: object) -> object:
             choice: dict = convert_user_input(choice)
 
             try:
-                return try_place(board, choice, tokens.player1_token)
+                return try_place(board, choice, token)
             
             except ValueError as e:
                 show_message(e)
 
 
-def get_user_row_column() -> dict:
+def get_user_row_column(user: str) -> dict:
     """get user row and column placement choice
     
     :returns: dict with 'row', 'column' keys and 'str' values"""
-    row: str = input(user_message("2", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
+    row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
     validate_user_choice_input(row)
 
-    column: str = input(user_message("3", DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
+    column: str = input(user_message("3", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
     validate_user_choice_input(column)
  
     choice = {
@@ -139,7 +162,8 @@ def get_user_row_column() -> dict:
     return choice
 
 
-def validate_user_choice_input(item):
+def validate_user_choice_input(item: str):
+    """raises errors if item not digit or not exists"""
     validate_digit(item)
     item_exists(item)
 
@@ -178,6 +202,7 @@ def bot_turn(board: object, tokens: object) -> object:
         try:
             return try_place(board, choice, tokens.player2_token)
         except ValueError:
+            print(f"computer failed to place")
             pass
 
 

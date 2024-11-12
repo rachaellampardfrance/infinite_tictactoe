@@ -1,8 +1,9 @@
 from helpers.messages.messages import user_error_message
 from helpers.game_board import GameBoard 
 from helpers.custom_errors import GameEndError
+from helpers.computer import TicTacToeComputer
 
-class TicTacToeBoard(GameBoard):
+class TicTacToeBoard(GameBoard, TicTacToeComputer):
 
     MIN_SIZE: int = 3
 
