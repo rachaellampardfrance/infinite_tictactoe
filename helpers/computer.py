@@ -2,230 +2,151 @@ from random import randint
 
 
 class TicTacToeComputer():
+    """holds parent functions for the TicTacToeBoard
+    class"""
 
     def get_easy_choice(self) -> dict:
+        """generate a random choice by board size"""
         row = randint(0, self.size - 1)
         column = randint(0, self.size - 1)
 
-        print(f"Random placement tried: [{row}][{column}]")
         return {"row": row, "column": column}
 
 
-    def get_hard_choice(self, tokens):
+    def get_hard_choice(self, tokens: object) -> dict:
+        """return a choice by order of priority"""
 
-        checks = [
-            (self._try_win, (tokens.player2_token, tokens, 2)),
-            (self._try_challenge_player, (tokens.player1_token, tokens, 2)),
-            (self._try_best_progress, (tokens.player2_token, tokens, 1))
+        # functions for each positional check
+        func = [
+            (self._consider_straights),
+            (self._consider_top_diagonal),
+            (self._consider_bottom_diagonal)
+        ]
+        # argument order, try win, try prevent player from...
+        # ...winning, try best progress
+        args = [
+            (tokens.player2_token, tokens, 2, 'row'),
+            (tokens.player2_token, tokens, 2),
+            (tokens.player1_token, tokens, 2),
+            (tokens.player2_token, tokens, 1)
         ]
 
-        for func, args in checks:
-            choice = func(*args)
-            if choice:
-                print(f"func: {func} args: {args}")
-                return choice
+        # by argument, run all functions
+        for arg in args:
+            for fun in func:
+                print(fun, arg)
+                # do not pass 'row' to diagonals
+                if not func == self._consider_straights and arg == (tokens.player2_token, tokens, 2, 'row'):
+                    continue
+                choice = fun(*arg)
+                if choice:
+                    return choice
         
         return self.get_easy_choice()
 
 
-    def _try_win(self, token, tokens, count):
-        print(f"try win")
-        args = (token, tokens, count)
-        checks = [
-            (self._check_rows)
-        ]
-
-        for func in checks:
-            choice = func(*args)
-            if choice:
-                return choice
-        
-
-    def _try_challenge_player(self, token, tokens, count):
-        print(f"try challenge player")
-        args = (token, tokens, count)
-        checks = [
-            (self._check_rows)
-        ]
-
-        for func in checks:
-            choice = func(*args)
-            if choice:
-                return choice
-
-
-    def _try_best_progress(self, token, tokens, count):
-        print("try best progress")
-        args = (token, tokens, count)
-        checks = [
-            (self._check_rows)
-        ]
-
-        for func in checks:
-            choice = func(*args)
-            if choice:
-                return choice
-
-    def _check_rows(self, token: str, tokens: object, count: int):
+    def _consider_straights(self, token: str, tokens: object, count: int, position: str = 'column') -> dict:
+        """loop over each row/column"""
         for i in range(self.size):
-            choice = self._check_row(i, token, tokens, count)
+            choice: dict | None = self._consider_straight(i, token, tokens, count, position)
             if choice:
                 return choice
 
 
-    def _check_row(self, itr: int, token: str, tokens: object, count: int):
-        row_icons: list = []
-        column_icons: list = []
-
-        for i in range(self.size):
-            row_icons.append(self.list[itr][i])
-            column_icons.append(self.list[i][itr])
+    def _consider_straight(self, itr: int, token: str, tokens: object, count: int, position: str) -> dict:
+        """check row by priority """
+        icons: list = self._generate_icons(itr, position)
+        matches_priority = (icons.count(token) == count)
+        player_present = (tokens.player1_token in icons)
+        is_free_space = (self.default_item in icons)
 
         if count == 1:
-            #  try to make best placement for win where player1 is not in row
-            if row_icons.count(token) == count and not tokens.player1_token in row_icons:
-                choice = self._consider_row(itr)
+            #  try to make best placement to progress, where player is not in row
+            if matches_priority and not player_present:
+                choice: dict | None = self._try_straight(itr, position)
                 if choice:
                     return choice 
-            
-            if column_icons.count(token) == count and not tokens.player1_token in column_icons:
-                choice = self._consider_column(itr)
-                if choice:
-                    return choice
-            #     # try:
-            #         choice["row"], choice["column"] = self._consider_row(itr)
-            #         return choice
-                # except ValueError:
-                #     return
+
         else:
-            if row_icons.count(token) == count and self.default_item in row_icons:
-                choice = self._consider_row(itr)
-                if choice:
-                    return choice
-            elif column_icons.count(token) == count and self.default_item in column_icons:
-                choice = self._consider_column(itr)
+            # by priority try to win or prevent the player from winning
+            if matches_priority and is_free_space:
+                choice: dict | None = self._try_straight(itr, position)
                 if choice:
                     return choice
 
-# def _check_row_prevent_win(board: object, itr: int, tokens: object):
-#     row_icons: list = []
-#     choice = {"row": None, "column": None}
 
-#     for i in range(board.size):
-#         row_icons.append(board.list[itr][i])
-
-#     print(row_icons)
-
-#     if row_icons.count(tokens.player1_token) == 2:
-#         choice["row"], choice["column"] = _consider_row(board, itr)
-#         print("row, hard choice: challenge player")
-#         return choice
-
-#     elif row_icons.count(tokens.player2_token) == 2:
-#         choice["row"], choice["column"] = _consider_row(board, itr)
-#         print("row, hard choice: try win")
-#         return choice
-    
-#     elif row_icons.count(tokens.player2_token) == 1:
-#         choice["row"], choice["column"] = _consider_row(board, itr)
-#         print("row, hard choice: best progress choice")
-#         return choice
-
-#     else:
-#         choice["row"], choice["column"] = _random_placement(board)
-#         print("row, hard choice: random choice")
-#         return choice
-
-
-    def _consider_row(self, j: int) -> tuple:
-        """cycle over row to find free space"""
-        print(f"considering row {j}")
+    def _generate_icons(self, itr: int, position: str) -> list:
+        icons: list = []
         for i in range(self.size):
-            row_icon = self.list[j][i]
-            print(f"row icon[{j}][{i}]: '{row_icon}'")
-            if row_icon == self.default_item:
-                print(f"success")
-                return {"row": j, "column": i}
-            print(f"failed consideration")
+            if position == 'row':
+                icons.append(self.list[itr][i])
+            else:
+                icons.append(self.list[i][itr])
+        return icons
 
 
-    def _consider_column(self, j: int) -> tuple:
+    def _try_straight(self, j: int, position: str = "column") -> dict:
         """cycle over row to find free space"""
-        print(f"considering column {j}")
         for i in range(self.size):
-            row_icon = self.list[i][j]
-            print(f"row icon[{i}][{j}]: '{row_icon}'")
-            if row_icon == self.default_item:
-                print(f"success")
-                return {"row": i, "column": j}
-            print(f"failed consideration")
-
-    # def _find_free_space(self, j: int) -> tuple:
-    #     """cycle over row to find free space"""
-    #     for i in range(self.size):
-    #         row_icon = self.list[j][i]
-    #         if row_icon == self.default_item:
-    #             return j, i
-    #     raise ValueError()
-
-# def _random_placement(board: object) -> tuple:
-#     choice = {"row": None, "column": None}
-
-#     choice["row"], choice["column"] = _get_random_placement(board)
-
-#     return choice
+            if position == 'row':
+                if self.list[j][i] == self.default_item:
+                    return {"row": j, "column": i}
+            else:
+                if self.list[i][j] == self.default_item:
+                    return {"row": i, "column": j}
 
 
-# def _get_random_placement(board: object):
-#     row = randint(0, board.size)
-#     column = randint(0, board.size)
-#     print(f"row: {row} column: {column}")
-#     return row, column
+    def _consider_top_diagonal(self, token: str, tokens: object, count: int) -> dict:
+        icons = []
+
+        for i in range(self.size):
+            icons.append(self.list[i][i])
+
+        if count == 1:
+            if icons.count(token) == count and not tokens.player1_token in icons:
+                choice: dict | None = self._try_top_diagonal()
+                if choice:
+                    return choice
+        else:
+            if icons.count(token) == count and self.default_item in icons:
+                choice: dict | None = self._try_top_diagonal()
+                if choice:
+                    return choice
+                
+
+    def _try_top_diagonal(self) -> dict:
+        """for top left diagonal checks for
+        free space to drop marker"""
+        for i in range(self.size):
+            icon: str = self.list[i][i] 
+            if icon == self.default_item:
+                return {"row": i, "column": i}
 
 
+    def _consider_bottom_diagonal(self, token: str, tokens: object, count: int) -> dict:
+        icons: list = []
+        size: int = self.size - 1
 
-def _check_for_winner(self) -> None:
-    """bubble GameEndError if winner found"""
-    self._check_rows_columns()
-    self._check_top_right_diagonal()
-    self._check_bottom_right_diagonal()
-
-def _check_rows_columns(self) -> None:
-    """bubble GameEndError if winner found"""
-    for i in range(self.size):
-        self._check_row_column( i)
+        for i in range(self.size):
+            icons.append(self.list[i][size - i])
         
-def _check_row_column(self, itr: int) -> None:
-    """raises GameEndError if any row or column is all the same token
-    
-    :param board: A GameBoard object
-    :param itr: 'int' for iteration
-    """
-    row_icons: set = set()
-    column__icons: set = set()
-
-    for i in range(self.size):
-        row_icons.add(self.list[itr][i])
-        column__icons.add(self.list[i][itr])
-    if len(row_icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in row_icons:
-        raise GameEndError(user_error_message("4", row_icons.pop()))
-    if len(column__icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in column__icons:
-        raise GameEndError(user_error_message("4", column__icons.pop()))
-
-def _check_top_right_diagonal(self) -> None:
-    """raises GameEndError if top right down diagonal is all the same token"""
-    icons: set = set()
-    for i in range(self.size):
-        icons.add(self.list[i][i])
-    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        raise GameEndError(user_error_message("4", icons.pop()))
-
-def _check_bottom_right_diagonal(self) -> None:
-    """raises GameEndError if bottom right up diagonal is all the same token"""
-    icons: set = set()
-    size: int = self.size - 1
-    for i in range(self.size):
-        icons.add(self.list[i][size - i])
-    if len(icons) == 1 and not GameBoard.DEFAULT_LIST_ITEM in icons:
-        raise GameEndError(user_error_message("4", icons.pop()))
-
+        if count == 1:
+            if icons.count(token) == count and not tokens.player1_token in icons:
+                choice: dict | None = self._try_bottom_diagonal()
+                if choice:
+                    return choice
+        else:
+            if icons.count(token) == count and self.default_item in icons:
+                choice: dict | None = self._try_bottom_diagonal()
+                if choice:
+                    return choice
+            
+    def _try_bottom_diagonal(self) -> dict:
+        """for bottom left diagonal checks for
+        free space to drop marker"""
+        size: int = self.size - 1
+        for i in range(self.size):
+            j = size - i
+            icon: str = self.list[i][j]
+            if icon == self.default_item:
+                return {"row": i, "column": j}

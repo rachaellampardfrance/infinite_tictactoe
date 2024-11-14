@@ -198,21 +198,12 @@ def bot_turn(board: object, tokens: object) -> object:
     
     :returns: the TicTacToeBoard object with computers token placement"""
     while True:
-        choice: dict = get_easy_bot_choice()
+        choice: dict = board.get_hard_choice(tokens)
         try:
             return try_place(board, choice, tokens.player2_token)
         except ValueError:
             print(f"computer failed to place")
             pass
-
-
-def get_easy_bot_choice() -> dict:
-    """generate random choice row/column from global ranges
-    
-    :returns: dict with 'row', 'column' keys and 'int' values"""
-    row: int = randint(MIN_RANGE, MAX_RANGE)
-    column: int = randint(MIN_RANGE, MAX_RANGE)
-    return {"row": row, "column": column}
 
 
 def game_on_choice() -> bool:
