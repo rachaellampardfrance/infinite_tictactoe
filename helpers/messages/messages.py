@@ -12,8 +12,7 @@ def error_message(message_code: str, *details: any) -> str:
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
-        else:
-            raise ValueError(ERROR_MESSAGES["2", message.count("{}"), len(details)])
+        raise ValueError(ERROR_MESSAGES["2", message.count("{}"), len(details)])
     return message
 
 
@@ -24,6 +23,8 @@ USER_MESSAGES = {
     "4": "Continue playing Y/N? ",
     "5": "{} is not a valid option",
     "6": "Closing...",
+    "7": "2 player or play against the computer? 2P / C : ",
+    "8": "Choose board size {}-{}: ",
 }
 
 def user_message(message_code: str, *details: any) -> str:
@@ -32,8 +33,7 @@ def user_message(message_code: str, *details: any) -> str:
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
-        else:
-            raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
+        raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
     return message
 
 
@@ -45,7 +45,7 @@ USER_ERROR_MESSAGES = {
     "5": "Stalemate!",
     "6": "Game End: {}",
     "7": "'{}' is not a valid player token. Valid tokens {}, {}",
-    "8": "Input cannot be empty"
+    "8": "Input cannot be empty",
 }
 
 def user_error_message(message_code: str, *details: any) -> str:
@@ -54,8 +54,7 @@ def user_error_message(message_code: str, *details: any) -> str:
     if "{}" in message:
         if message.count("{}") == len(details):
             return message.format(*details)
-        else:
-            raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
+        raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
     return message
 
 

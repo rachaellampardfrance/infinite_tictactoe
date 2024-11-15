@@ -13,7 +13,7 @@ class GameBoard:
     DEFAULT_LIST_ITEM: str = ' '
     BOX_SIZE: int = 4
     MIN_SIZE: int = 3
-    MAX_SIZE: int = 5
+    MAX_SIZE: int = 10
 
     def __init__(self, size: int=MIN_SIZE, box_size: int=BOX_SIZE):
         """initialise empty game board

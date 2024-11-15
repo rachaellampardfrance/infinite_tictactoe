@@ -2,6 +2,8 @@
 from helpers.messages.messages import user_error_message
 
 class Tokens:
+    """An object that holds player1 and player2 tokens
+    also holds list of valid player tokens"""
 
     PLAYER_TOKENS: list = ['X', 'O']
 
@@ -14,7 +16,7 @@ class Tokens:
         tokens = (f"{self.users['1']}: {self.player1_token}\n"
         f"{self.users['2']}: {self.player2_token}")
         return tokens
-    
+
 
     def get_player2_token(self) -> str:
         """set player2 token dependant of player1 token
@@ -25,7 +27,7 @@ class Tokens:
         if self.player1_token == Tokens.PLAYER_TOKENS[0]:
             return Tokens.PLAYER_TOKENS[1]
         return Tokens.PLAYER_TOKENS[0]
-        
+
 
     @classmethod
     def valid_token(cls, token: str) -> None:
@@ -44,5 +46,5 @@ class Tokens:
     @player1_token.setter
     def player1_token(self, player1_token: str) -> None:
         Tokens.valid_token(player1_token)
-         
+
         self._player1_token = player1_token

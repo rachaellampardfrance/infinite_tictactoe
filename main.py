@@ -19,7 +19,8 @@ def main() -> None:
     try:
         """tic tac toe game creation and game loop"""
         players = get_players()
-        game_board, player_tokens = init_game(players)
+        board_size = get_board_size()
+        game_board, player_tokens = init_game(players, board_size)
         print_game(game_board, player_tokens)
 
         # game loop
@@ -30,18 +31,44 @@ def main() -> None:
         exit_message()
 
 
+def get_players():
+    options = ['2P', 'C']
 
-def init_game(players: int) -> tuple:
+    while True:
+        choice = input(user_message("7")).strip().upper()
+
+        if choice == options[0]:
+            return 2
+        elif choice == options[1]:
+            return 1
+
+
+def get_board_size():
+    min_size = TicTacToeBoard.MIN_SIZE
+    max_size = TicTacToeBoard.MAX_SIZE
+
+    while True:
+        size = input(user_message("8", min_size, max_size)).strip()
+        try:
+            validate_digit(size)
+        except:
+            continue
+        else:
+            if min_size <= int(size) <= max_size:
+                return int(size)
+
+
+def init_game(players: int, board_size: int) -> tuple:
     """:returns: tuple of TicTacToeBoard and Tokens objects"""
-    board: object = create_game_board()
+    board: object = create_game_board(board_size)
     set_max_ranges(board)
     tokens: object = set_tokens(players)
     return board, tokens
 
 
-def create_game_board() -> object:
+def create_game_board(board_size: int) -> object:
     """:returns: new TicTacToeBoard object"""
-    game_board: object = TicTacToeBoard()
+    game_board: object = TicTacToeBoard(board_size)
     return game_board
 
 
@@ -75,20 +102,6 @@ def get_player1_token_choice() -> str:
     :returns: 'str' of user token choice"""
     tokens: object = Tokens.PLAYER_TOKENS
     return input(user_message("1", tokens[0], tokens[1])).strip().upper()
-
-
-
-def get_players():
-    options = ['2P', 'C']
-
-    while True:
-        choice = input("2 player or play against the computer? 2P / C : ").strip().upper()
-
-        if choice == options[0]:
-            return 2
-        elif choice == options[1]:
-            return 1
-
 
 
 def print_game(board: object, tokens: object) -> None:
