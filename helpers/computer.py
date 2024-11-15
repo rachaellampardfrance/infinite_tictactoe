@@ -1,9 +1,10 @@
+"""TicTacToe computer player logic that parents the TicTacToeBoard class"""
 from random import randint
 
 
 class TicTacToeComputer():
-    """holds parent functions for the TicTacToeBoard
-    class"""
+    """holds parent logic functions for the computer player 
+    for the TicTacToeBoard class"""
 
     def get_easy_choice(self) -> dict:
         """generate a random choice by board size"""
@@ -13,140 +14,183 @@ class TicTacToeComputer():
         return {"row": row, "column": column}
 
 
-    def get_hard_choice(self, tokens: object) -> dict:
-        """return a choice by order of priority"""
+    def get_hard_choice(
+            self,
+            tokens: object) -> dict:
+        """:returns: a 'dict' token placement choice by order of priority"""
+        args = self._generate_priorities(tokens)
+        func = self._consider_lines
 
-        # functions for each positional check
-        func = [
-            (self._consider_straights),
-            (self._consider_top_diagonal),
-            (self._consider_bottom_diagonal)
-        ]
-        # argument order, try win, try prevent player from...
-        # ...winning, try best progress
-        args = [
-            (tokens.player2_token, tokens, 2, 'row'),
-            (tokens.player2_token, tokens, 2),
-            (tokens.player1_token, tokens, 2),
-            (tokens.player2_token, tokens, 1)
-        ]
-
-        # by argument, run all functions
         for arg in args:
-            for fun in func:
-                print(fun, arg)
-                # do not pass 'row' to diagonals
-                if not func == self._consider_straights and arg == (tokens.player2_token, tokens, 2, 'row'):
-                    continue
-                choice = fun(*arg)
-                if choice:
-                    return choice
-        
-        return self.get_easy_choice()
-
-
-    def _consider_straights(self, token: str, tokens: object, count: int, position: str = 'column') -> dict:
-        """loop over each row/column"""
-        for i in range(self.size):
-            choice: dict | None = self._consider_straight(i, token, tokens, count, position)
+            choice = func(*arg)
             if choice:
                 return choice
 
-
-    def _consider_straight(self, itr: int, token: str, tokens: object, count: int, position: str) -> dict:
-        """check row by priority """
-        icons: list = self._generate_icons(itr, position)
-        matches_priority = (icons.count(token) == count)
-        player_present = (tokens.player1_token in icons)
-        is_free_space = (self.default_item in icons)
-
-        if count == 1:
-            #  try to make best placement to progress, where player is not in row
-            if matches_priority and not player_present:
-                choice: dict | None = self._try_straight(itr, position)
-                if choice:
-                    return choice 
-
-        else:
-            # by priority try to win or prevent the player from winning
-            if matches_priority and is_free_space:
-                choice: dict | None = self._try_straight(itr, position)
-                if choice:
-                    return choice
+        return self.get_easy_choice()
 
 
-    def _generate_icons(self, itr: int, position: str) -> list:
-        icons: list = []
-        for i in range(self.size):
-            if position == 'row':
-                icons.append(self.list[itr][i])
-            else:
-                icons.append(self.list[i][itr])
-        return icons
+    def _generate_priorities(
+            self,
+            tokens: object) -> list:
+        """generate func arguments in order of priority
+
+        :returns: type 'list' of tuples containing arguments"""
+        priorities: list = []
+        positions: list = ['row', 'column', 'top diagonal', 'bottom diagonal']
+
+        for i in reversed(range(1, self.size)):
+            for position in positions:
+                # make the winning or best progress move
+                priorities.append((tokens.player2_token, tokens, i, position))
+            for position in positions:
+                # make the best prevent player win or challenge move
+                priorities.append((tokens.player1_token, tokens, i, position))
+
+        return priorities
 
 
-    def _try_straight(self, j: int, position: str = "column") -> dict:
-        """cycle over row to find free space"""
-        for i in range(self.size):
-            if position == 'row':
-                if self.list[j][i] == self.default_item:
-                    return {"row": j, "column": i}
-            else:
-                if self.list[i][j] == self.default_item:
-                    return {"row": i, "column": j}
-
-
-    def _consider_top_diagonal(self, token: str, tokens: object, count: int) -> dict:
-        icons = []
-
-        for i in range(self.size):
-            icons.append(self.list[i][i])
-
-        if count == 1:
-            if icons.count(token) == count and not tokens.player1_token in icons:
-                choice: dict | None = self._try_top_diagonal()
+    def _consider_lines(
+            self,
+            token: str,
+            tokens: object,
+            priority: int,
+            position: str) -> dict:
+        """:returns: placement location"""
+        args = (token, tokens, priority, position)
+        if position in ['row', 'column']:
+            for i in range(self.size):
+                choice = self._consider_line(*args, itr=i)
                 if choice:
                     return choice
-        else:
-            if icons.count(token) == count and self.default_item in icons:
-                choice: dict | None = self._try_top_diagonal()
-                if choice:
-                    return choice
-                
-
-    def _try_top_diagonal(self) -> dict:
-        """for top left diagonal checks for
-        free space to drop marker"""
-        for i in range(self.size):
-            icon: str = self.list[i][i] 
-            if icon == self.default_item:
-                return {"row": i, "column": i}
+            return None
+        # used for diagonal checks  as doesn't need recursive checking
+        return self._consider_line(*args)
 
 
-    def _consider_bottom_diagonal(self, token: str, tokens: object, count: int) -> dict:
-        icons: list = []
-        size: int = self.size - 1
+    def _consider_line(
+            self,
+            *args,
+            itr: int | None = None) -> dict:
+        """:returns: placement location"""
+        token, tokens, priority, position = args
+        indexed_icons: list = self._generate_indexed_icons(position, itr)
+        matches_priority = self._matches_requirements(indexed_icons, token, tokens, priority)
 
-        for i in range(self.size):
-            icons.append(self.list[i][size - i])
+        if matches_priority:
+            return self._get_location(indexed_icons)
+        return None
+
+
+    def _generate_indexed_icons(
+            self,
+            position: str,
+            itr: int | None = None) -> list:
+        """generate a list of icons and their index locations
         
-        if count == 1:
-            if icons.count(token) == count and not tokens.player1_token in icons:
-                choice: dict | None = self._try_bottom_diagonal()
-                if choice:
-                    return choice
-        else:
-            if icons.count(token) == count and self.default_item in icons:
-                choice: dict | None = self._try_bottom_diagonal()
-                if choice:
-                    return choice
-            
-    def _try_bottom_diagonal(self) -> dict:
-        """for bottom left diagonal checks for
-        free space to drop marker"""
-        size: int = self.size - 1
+        :param position: type 'str'. valid arguments; 'row', 
+        'column', 'top diagonal', 'bottom diagonal'.
+        :param itr: type 'int' that can be assigned to check a
+        specific row or column at the int index.
+        """
+        if position == 'row':
+            return self._generate_row_index_items(itr)
+        if position == 'column':
+            return self._generate_column_index_items(itr)
+        if position == 'top diagonal':
+            return self._generate_top_diagonal_index_items()
+        if position == 'bottom diagonal':
+            return self._generate_bottom_diagonal_index_items()
+
+        raise ValueError
+
+
+    def _generate_row_index_items(self, itr: int) -> list:
+        indexed_icons:list = []
+
         for i in range(self.size):
-            j = size - i
-            icon: str = self.list[i][j]
+            indexed_icons.append((self.list[itr][i], (itr, i)))
+        return indexed_icons
+
+    def _generate_column_index_items(self, itr: int) -> list:
+        indexed_icons:list = []
+
+        for i in range(self.size):
+            indexed_icons.append((self.list[i][itr], (i, itr)))
+        return indexed_icons
+
+    def _generate_top_diagonal_index_items(self) -> list:
+        indexed_icons:list = []
+
+        for i in range(self.size):
+            indexed_icons.append((self.list[i][i], (i, i)))
+        return indexed_icons
+
+    def _generate_bottom_diagonal_index_items(self) -> list:
+        indexed_icons:list = []
+        size: int = self.size - 1
+
+        for i in range(self.size):
+            indexed_icons.append((self.list[i][size - i], (i, size - i)))
+        return indexed_icons
+
+
+    def _matches_requirements(
+            self,
+            indexed_icons: list,
+            token: str,
+            tokens: list,
+            priority: int) -> bool:
+        """:param indexed_icons: 'list' of tuples containing an icon
+        'str' and a tuple (i, j) of index location
+        :param priority: the count of tokens needed to match the priority
+        """
+        icons: list = self._unpack_icons(indexed_icons)
+
+        if not self._is_priority_match(icons, token, priority):
+            return False
+        if not self._is_free_space(icons):
+            return False
+        if self._is_opposite_token_present(icons, token, tokens):
+            return False
+
+        return True
+
+    def _unpack_icons(self, indexed_icons: list) -> list:
+        """unpack icons from list of tuples with icons and index's
+
+        :param icons: 'list' of tuples with icon 'str'
+        and tuple (i, j) of icons index location"""
+        return [icon for icon, _ in indexed_icons]
+
+    def _is_free_space(self, icons: list) -> bool:
+        return self.default_item in icons
+
+    def _is_opposite_token_present(
+            self,
+            icons: list,
+            token: str,
+            tokens: object) -> bool:
+        opposite_token = [tokens.player1_token, tokens.player2_token]
+        opposite_token.remove(token)
+        return opposite_token[0] in icons
+
+    def _is_priority_match(
+            self,
+            icons: list,
+            token: str,
+            priority: int) -> bool:
+        return icons.count(token) == priority
+
+
+    def _get_location(self, indexed_icons: list) -> dict:
+        """get placement location from free space icon
+
+        :param icons: 'list' of tuples with icon 'str'
+        and tuple (i, j) of icons index location
+        
+        :returns: dict of keys 'row' and 'column' with
+        corresponding index values"""
+        for icon, index in indexed_icons:
             if icon == self.default_item:
-                return {"row": i, "column": j}
+                return {"row": index[0], "column": index[1]}
+        return None
