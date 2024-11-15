@@ -2,7 +2,7 @@
 from random import randint
 from helpers.custom_errors import GameEndError
 from helpers.tic_tac_toe_board import TicTacToeBoard
-from helpers.messages.messages import user_error_message, user_message
+from helpers.messages.messages import user_message, show_message, game_end_error_message, exit_message
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit, item_exists
 
@@ -227,16 +227,6 @@ def validate_game_on_choice(choice: str) -> None:
     valid: list = ['Y', 'N']
     if not choice in valid:
         raise ValueError(user_message("5", choice))
-
-
-def show_message(e: str) -> None:
-    print(e)
-
-def game_end_error_message(e: str) -> None:
-    print(user_error_message("6", e))
-
-def exit_message() -> None:
-    print(user_message("6"))
 
 
 if __name__ == '__main__':

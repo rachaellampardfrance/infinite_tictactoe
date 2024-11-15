@@ -57,3 +57,16 @@ def user_error_message(message_code: str, *details: any) -> str:
         else:
             raise ValueError(ERROR_MESSAGES["6", message.count("{}"), len(details)])
     return message
+
+
+def show_message(e: str) -> None:
+    """prints message to user"""
+    print(e)
+
+def game_end_error_message(e: str) -> None:
+    """prints game end message with causation"""
+    print(user_error_message("6", e))
+
+def exit_message() -> None:
+    """prints exit program message"""
+    print(user_message("6"))
