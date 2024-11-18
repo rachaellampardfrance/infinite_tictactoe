@@ -62,6 +62,7 @@ class GameBoard:
         """format bottom of board by self.size"""
         bottom: str = " "
         for i in range(self.size):
+            # chr(8254) is upperscore
             if i == self.size - 1:
                 # allows for last iteration to allow a whitespace
                 bottom += f"{' ':{chr(8254)}>{self.box}}"

@@ -1,10 +1,13 @@
 """This program runs a game of tic tac toe"""
-from random import randint
 from helpers.custom_errors import GameEndError
+from helpers.messages.messages import (
+    user_message,
+    show_message,
+    game_end_error_message,
+    exit_message)
 from helpers.tic_tac_toe_board import TicTacToeBoard
-from helpers.messages.messages import user_message, show_message, game_end_error_message, exit_message
 from helpers.tokens import Tokens
-from helpers.validation import validate_digit, item_exists
+from helpers.validation import validate_digit
 
 
 # for values displayed to the user
@@ -20,7 +23,7 @@ def main() -> None:
         """tic tac toe game creation and game loop"""
         players = get_players()
         board_size = get_board_size()
-        game_board, player_tokens = init_game(players, board_size)
+        game_board, player_tokens = init_tictactoe_game(players, board_size)
         print_game(game_board, player_tokens)
 
         # game loop
@@ -58,10 +61,10 @@ def get_board_size():
                 return int(size)
 
 
-def init_game(players: int, board_size: int) -> tuple:
+def init_tictactoe_game(players: int, board_size: int) -> tuple:
     """:returns: tuple of TicTacToeBoard and Tokens objects"""
     board: object = create_game_board(board_size)
-    set_max_ranges(board)
+    set_global_max_ranges(board)
     tokens: object = set_tokens(players)
     return board, tokens
 
@@ -72,7 +75,7 @@ def create_game_board(board_size: int) -> object:
     return game_board
 
 
-def set_max_ranges(board: object) -> None:
+def set_global_max_ranges(board: object) -> None:
     """set global ranges by TicTacToeBoard object instance size"""
     global MAX_RANGE, DISPLAY_MAX_RANGE
 
@@ -83,12 +86,14 @@ def set_max_ranges(board: object) -> None:
 def set_tokens(players: int) -> object:
     """:returns: Token object with assigned player tokens"""
     while True:
+        player1_token = get_player1_token_choice()
+
         try:
-            if not players == 2:
-                player_tokens: object = Tokens(get_player1_token_choice(), 'Computer')
+            if players == 2:
+                player_tokens: object = Tokens(player1_token)
                 
             else:
-                player_tokens: object = Tokens(get_player1_token_choice())
+                player_tokens: object = Tokens(player1_token, 'Computer')
 
             return player_tokens
 
@@ -163,22 +168,17 @@ def get_user_row_column(user: str) -> dict:
     
     :returns: dict with 'row', 'column' keys and 'str' values"""
     row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
-    validate_user_choice_input(row)
+    validate_user_digit_input(row)
 
     column: str = input(user_message("3", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
-    validate_user_choice_input(column)
- 
-    choice = {
-        "row": row,
-        "column": column
-    }
-    return choice
+    validate_user_digit_input(column)
+
+    return {"row": row, "column": column}
 
 
-def validate_user_choice_input(item: str):
+def validate_user_digit_input(item: str):
     """raises errors if item not digit or not exists"""
     validate_digit(item)
-    item_exists(item)
 
 
 def convert_user_input(choice: dict) -> dict:
@@ -215,7 +215,7 @@ def bot_turn(board: object, tokens: object) -> object:
         try:
             return try_place(board, choice, tokens.player2_token)
         except ValueError:
-            print(f"computer failed to place")
+            # print(f"computer failed to place")
             pass
 
 
