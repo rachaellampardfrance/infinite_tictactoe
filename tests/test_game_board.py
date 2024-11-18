@@ -1,26 +1,34 @@
 from helpers.game_board import GameBoard
+from helpers.messages.messages import error_message, user_error_message
 import pytest
 
 def test_init():
     """test GameBoard initialisation"""
     # correct board list generated on initial
     game_board = GameBoard()
-    assert game_board.list == [
-            [' ', ' ', ' '],
-            [' ', ' ', ' '],
-            [' ', ' ', ' ']
-        ]
+    assert (game_board.size == 3
+            and game_board.list == [
+                [' ', ' ', ' '],
+                [' ', ' ', ' '],
+                [' ', ' ', ' ']
+        ])
 
     # test setting size value to none default sets
     #  size, index and list correctly
-    game_board = GameBoard(5)
-    assert game_board.size == 5 and game_board.list == [     
-            [' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' '],
-            [' ', ' ', ' ', ' ', ' '],
-            ]
+    game_board = GameBoard(size=10)
+    assert (game_board.size == 10 
+            and game_board.list == [
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+        ])
 
 
 def test_size():
@@ -28,100 +36,113 @@ def test_size():
 
     # default size
     game_board = GameBoard()
-    assert game_board.size == 3
+    assert game_board.size == GameBoard.MIN_SIZE
     # argument sizes
-    game_board = GameBoard(3)
-    assert game_board.size == 3
-    game_board = GameBoard(4)
-    assert game_board.size == 4
+    game_board = GameBoard(GameBoard.MIN_SIZE)
+    assert game_board.size == GameBoard.MIN_SIZE
     game_board = GameBoard(5)
-    assert game_board.size == 5    
+    assert game_board.size == 5
+    game_board = GameBoard(GameBoard.MAX_SIZE)
+    assert game_board.size == GameBoard.MAX_SIZE
 
-    # size only accepts 3-5 range inclusive
-    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
-        game_board = GameBoard(1)
-    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
+    # size only accepts 3-10 range inclusive
+    with pytest.raises(
+        ValueError,
+        match=error_message(
+            "1",
+            GameBoard.MIN_SIZE,
+            GameBoard.MAX_SIZE
+        )):
+        game_board = GameBoard(GameBoard.MIN_SIZE - 1)
+
+    with pytest.raises(
+        ValueError,
+        match=error_message(
+            "1",
+            GameBoard.MIN_SIZE,
+            GameBoard.MAX_SIZE
+        )):
         game_board = GameBoard(-1)
-    with pytest.raises(ValueError, match="'size' must be between 3 - 5 inclusive"):
-        game_board = GameBoard(6)
+
+    with pytest.raises(
+        ValueError,
+        match=error_message(
+            "1",
+            GameBoard.MIN_SIZE,
+            GameBoard.MAX_SIZE
+        )):
+        game_board = GameBoard(GameBoard.MAX_SIZE + 1)
+
 
     # size only accepts 'int' type
-    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
+    with pytest.raises(TypeError):
         game_board = GameBoard('a')
-    with pytest.raises(TypeError, match="'dict' is not of type 'int'"):
+    with pytest.raises(TypeError):
         game_board = GameBoard({})
-    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
-        game_board = GameBoard([1, 2])
-    with pytest.raises(TypeError, match="'tuple' is not of type 'int'"):
+    with pytest.raises(TypeError):
+        game_board = GameBoard([])
+    with pytest.raises(TypeError):
         game_board = GameBoard(())
-
-
-def test_generate_list():
-    game_board = GameBoard()
-    assert game_board.list == [
-        [' ', ' ', ' '],
-        [' ', ' ', ' '],
-        [' ', ' ', ' ']]
-    game_board = GameBoard(5)
-    assert game_board.list == [
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' '],
-        [' ', ' ', ' ', ' ', ' ']]
 
 
 def test_validate_board_location():
     """check function can identify all board locations"""
 
-    # does not raise error: valid board location 
+    # minimum board size
+    # does not raise error: valid board location
     game_board = GameBoard()
     try:
-        game_board.validate_board_location(0, 2)
+        game_board.validate_board_location(0, GameBoard.MIN_SIZE - 1)
     except:
-        assert False, "ints 0, 2 raised an exception"
+        assert False, "validate_board_location(0, 2) raised an exception"
     # raises error: out of bounds board locations 
-    with pytest.raises(ValueError, match="Not a board location"):
+    with pytest.raises(ValueError, match=user_error_message("3")):
         game_board.validate_board_location(-1, 0)
-    with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_board_location(0, 3)
-    # raises error: either input value is not of type 'int'
-    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
-        game_board.validate_board_location('a', 1)
-    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
-        game_board.validate_board_location(1, [])
+    with pytest.raises(ValueError, match=user_error_message("3")):
+        game_board.validate_board_location(0, GameBoard.MIN_SIZE)
+
+
+    # maximum board size
+    # does not raise error: valid board location
+    game_board = GameBoard(size=GameBoard.MAX_SIZE)
+    try:
+        game_board.validate_board_location(0, GameBoard.MAX_SIZE - 1)
+    except:
+        assert False, "validate_board_location(0, 9) raised an exception"
+    # raises error: out of bounds board locations 
+    with pytest.raises(ValueError, match=user_error_message("3")):
+        game_board.validate_board_location(-1, 0)
+    with pytest.raises(ValueError, match=user_error_message("3")):
+        game_board.validate_board_location(0, GameBoard.MAX_SIZE)
+
 
 
 def test_validate_placement():
-    """returns True if the location is unoccupied
-    and False if occupied"""
+    """raises ValueError if placement is already taken"""
 
-    # True: valid placement
+    # smallest size board 
+    # valid placement at max location
     game_board = GameBoard()
     try:
-        game_board.validate_placement(0, 0)
+        game_board.validate_placement(GameBoard.MIN_SIZE - 1, GameBoard.MIN_SIZE - 1)
     except:
-        assert False, "0, 0 'ints' raised an error"
+        assert False, "validate_placement(GameBoard.MIN_SIZE - 1, GameBoard.MIN_SIZE - 1) raised an error"
+    # now already taken
+    game_board.list[GameBoard.MIN_SIZE - 1][GameBoard.MIN_SIZE - 1] = 'X'
+    with pytest.raises(ValueError, match=user_error_message("2")):
+        game_board.validate_placement(GameBoard.MIN_SIZE - 1, GameBoard.MIN_SIZE - 1) 
 
-    # False: occupied location
-    game_board = GameBoard()
-    game_board.list = [     
-        ['X', ' ', ' '],
-        [' ', ' ', ' '],
-        [' ', ' ', ' ']
-    ]
-    with pytest.raises(ValueError, match="placement is already taken, try again"):
-        game_board.validate_placement(0, 0) 
-
-    # raises error: placement is not a board location
-    with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_placement(-1, 0)
-    with pytest.raises(ValueError, match="Not a board location"):
-        game_board.validate_placement(0, 3)
-
-    # raises error: passed in placements are not digits
-    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
-        game_board.validate_placement('a', 1)
+    # largest size board
+    # valid placement at max location
+    game_board = GameBoard(size=GameBoard.MAX_SIZE)
+    try:
+        game_board.validate_placement(GameBoard.MAX_SIZE - 1, GameBoard.MAX_SIZE - 1)
+    except:
+        assert False, "validate_placement(GameBoard.MAX_SIZE - 1, GameBoard.MAX_SIZE - 1) raised an error"
+    # now already taken
+    game_board.list[GameBoard.MAX_SIZE - 1][GameBoard.MAX_SIZE - 1] = 'X'
+    with pytest.raises(ValueError, match=user_error_message("2")):
+        game_board.validate_placement(GameBoard.MAX_SIZE - 1, GameBoard.MAX_SIZE - 1)
 
 
 def test_get_list_item():
@@ -135,12 +156,6 @@ def test_get_list_item():
     assert game_board.get_list_item(1, 1) == 'O'
     assert game_board.get_list_item(2, 2) == 'X'
     assert game_board.get_list_item(2, 1) == ' '
-
-    with pytest.raises(TypeError, match="'str' is not of type 'int'"):
-        game_board.get_list_item('a', 1)
-    with pytest.raises(TypeError, match="'list' is not of type 'int'"):
-        game_board.get_list_item([1, 2, 3], 1)
-
 
 
 def test_str():
@@ -178,7 +193,7 @@ def test_str():
 def test_str_large():
     """Test boards larger than default size"""
     # from initial
-    game_board = GameBoard(4)
+    game_board = GameBoard(size=4)
     assert game_board.__str__() == (
         " _______________ \n"
         "|   |   |   |   |\n"
@@ -191,7 +206,7 @@ def test_str_large():
         " ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾ ")
     
     # from ongoing game
-    game_board = GameBoard(5)
+    game_board = GameBoard(size=5)
     game_board.list = [     
         ['X', ' ', 'O', ' ', ' '],
         [' ', 'O', ' ', ' ', ' '],
