@@ -6,8 +6,5 @@ tests\__pycache__
 .pytest_cache
 .vscode
 
-# stop git recognising juypter outputs
-.ipynb_checkpoints
-
 # .*  # ignore all hidden files and folders
 # !/.gitignore  # explicitly do not ignore .gitignore

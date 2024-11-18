@@ -23,18 +23,19 @@ def main() -> None:
         """tic tac toe game creation and game loop"""
         players = get_players()
         board_size = get_board_size()
+        difficulty = get_difficulty(players)
         game_board, player_tokens = init_tictactoe_game(players, board_size)
         print_game(game_board, player_tokens)
 
         # game loop
-        game_loop(game_board, player_tokens, players)
+        game_loop(game_board, player_tokens, players, difficulty)
     except KeyboardInterrupt:
         print("")
     finally:
         exit_message()
 
 
-def get_players():
+def get_players() -> int:
     options = ['2P', 'C']
 
     while True:
@@ -66,6 +67,7 @@ def init_tictactoe_game(players: int, board_size: int) -> tuple:
     board: object = create_game_board(board_size)
     set_global_max_ranges(board)
     tokens: object = set_tokens(players)
+
     return board, tokens
 
 
@@ -101,6 +103,17 @@ def set_tokens(players: int) -> object:
             show_message(e)
 
 
+def get_difficulty(players: int) -> str | None:
+    if players == 1:
+        while True:
+            difficulty = input("Choose difficulty easy/hard: ").strip().lower()
+            if difficulty in ['e', 'easy']:
+                return 'easy'
+            elif difficulty in ['h', 'hard']:
+                return 'hard'
+    return None
+
+
 def get_player1_token_choice() -> str:
     """get user token choice from available tokens
     
@@ -116,20 +129,21 @@ def print_game(board: object, tokens: object) -> None:
 
 
 
-def game_loop(board: object, tokens: object, players: int) -> None:
+def game_loop(board: object, tokens: object, players: int, difficulty: str) -> None:
     """loop turns, printing board, 
     win and stalemate checks, and game on choice"""
     try:
         game_on: bool = True
         while game_on:
-            board = user_placement(board, tokens.player1_token, "Player 1: ")
+            board = user_placement(board, tokens.player1_token, "Player 1:")
             print_game(board, tokens)
             board.validate_game_on()
+            
 
             if players == 2:
-                board = user_placement(board, tokens.player2_token, "Player 2: ")
+                board = user_placement(board, tokens.player2_token, "Player 2:")
             else:
-                board = bot_turn(board, tokens)
+                board = computer_turn(board, tokens, difficulty)
 
             print_game(board, tokens)
             board.validate_game_on()
@@ -206,12 +220,16 @@ def try_place(board: object, location: dict, token: str) -> object:
     return board
 
 
-def bot_turn(board: object, tokens: object) -> object:
+def computer_turn(board: object, tokens: object, difficulty: str = 'easy') -> object:
     """computer token placement
     
     :returns: the TicTacToeBoard object with computers token placement"""
     while True:
-        choice: dict = board.get_hard_choice(tokens)
+        if difficulty == 'easy':
+            choice: dict = board.get_easy_choice()
+        else:
+            choice: dict = board.get_hard_choice(tokens)
+
         try:
             return try_place(board, choice, tokens.player2_token)
         except ValueError:
