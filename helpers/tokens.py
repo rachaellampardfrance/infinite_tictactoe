@@ -1,23 +1,25 @@
 """create token class and logic"""
 from helpers.messages.messages import user_error_message
-from helpers.validation import validate_str
 
 class Tokens:
+    """An object that holds player1 and player2 tokens
+    also holds list of valid player tokens"""
 
     PLAYER_TOKENS: list = ['X', 'O']
 
-    def __init__(self, player1_token: str ='X') -> object:
+    def __init__(self, player1_token: str ='X', player2 = 'Player 2') -> object:
         self.player1_token: str = player1_token
         self.player2_token: str = self.get_player2_token()
+        self.users: dict = {'1': 'Player 1', '2': player2}
 
     def __str__(self) -> str:
-        tokens = (f"Player: {self.player1_token}\n"
-        f"Computer: {self.player2_token}")
+        tokens = (f"{self.users['1']}: {self.player1_token}\n"
+        f"{self.users['2']}: {self.player2_token}")
         return tokens
-    
+
 
     def get_player2_token(self) -> str:
-        """set player2 token dependant on player1 token
+        """set player2 token dependant of player1 token
         
         :returns: 'str' of player2 token"""
         self.valid_token(self.player1_token)
@@ -25,7 +27,7 @@ class Tokens:
         if self.player1_token == Tokens.PLAYER_TOKENS[0]:
             return Tokens.PLAYER_TOKENS[1]
         return Tokens.PLAYER_TOKENS[0]
-        
+
 
     @classmethod
     def valid_token(cls, token: str) -> None:
@@ -43,7 +45,6 @@ class Tokens:
         return self._player1_token
     @player1_token.setter
     def player1_token(self, player1_token: str) -> None:
-        validate_str(player1_token)
         Tokens.valid_token(player1_token)
-         
+
         self._player1_token = player1_token

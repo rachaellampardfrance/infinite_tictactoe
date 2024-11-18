@@ -1,22 +1,32 @@
+"""TicTacToeBoard class"""
 from helpers.messages.messages import user_error_message
-from helpers.game_board import GameBoard 
+from helpers.game_board import GameBoard
 from helpers.custom_errors import GameEndError
+from helpers.computer import TicTacToeComputer
 
-class TicTacToeBoard(GameBoard):
+class TicTacToeBoard(GameBoard, TicTacToeComputer):
+    """creates an instance of a 'tic tac toe' game
+
+    :GameBoard: parent class that init's the "board"
+
+    :TicTacToeComputer: parent class that holds functions
+    for the computer player logic for 'tic tac toe'
+    """
 
     MIN_SIZE: int = 3
-
+    # set format size for board boxes
     BOX_SIZE: int = 4
 
 
     def __init__(self, size: int=MIN_SIZE, box_size: int=BOX_SIZE):
+        """initialise board instance using GameBoard parent"""
         GameBoard.__init__(self, size = size, box_size = box_size)
-    
+
     def validate_game_on(self) -> None:
         """bubbles winner or stalemate GameEndError"""
         self._check_for_winner()
         self._check_for_stalemate()
-    
+
     def _check_for_winner(self) -> None:
         """bubble GameEndError if winner found"""
         self._check_rows_columns()
@@ -27,7 +37,7 @@ class TicTacToeBoard(GameBoard):
         """bubble GameEndError if winner found"""
         for i in range(self.size):
             self._check_row_column( i)
-            
+
     def _check_row_column(self, itr: int) -> None:
         """raises GameEndError if any row or column is all the same token
         

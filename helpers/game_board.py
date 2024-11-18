@@ -1,5 +1,4 @@
 """create game board and validation"""
-from helpers.validation import validate_str, validate_int, validate_positive_int
 from helpers.messages.messages import error_message, user_error_message
 
 class GameBoard:
@@ -14,7 +13,7 @@ class GameBoard:
     DEFAULT_LIST_ITEM: str = ' '
     BOX_SIZE: int = 4
     MIN_SIZE: int = 3
-    MAX_SIZE: int = 5
+    MAX_SIZE: int = 10
 
     def __init__(self, size: int=MIN_SIZE, box_size: int=BOX_SIZE):
         """initialise empty game board
@@ -28,6 +27,7 @@ class GameBoard:
         self.size: int = size
         self.list: list = self._generate_list()
         self.box: int = box_size
+        self.default_item: str = GameBoard.DEFAULT_LIST_ITEM
 
 
     def __str__(self) -> str:
@@ -62,6 +62,7 @@ class GameBoard:
         """format bottom of board by self.size"""
         bottom: str = " "
         for i in range(self.size):
+            # chr(8254) is upperscore
             if i == self.size - 1:
                 # allows for last iteration to allow a whitespace
                 bottom += f"{' ':{chr(8254)}>{self.box}}"
@@ -117,7 +118,6 @@ class GameBoard:
 
     def validate_board_location(self, row: int, column: int) -> None:
         """raise error if not a board location"""
-        validate_int(row, column)
 
         if not (row in range(self.size) and column in range(self.size)):
             raise ValueError(user_error_message("3"))
@@ -126,7 +126,6 @@ class GameBoard:
     @classmethod
     def is_default_list_item(cls, item: str) -> bool:
         """return true/false"""
-        validate_str(item)
 
         return item == cls.DEFAULT_LIST_ITEM
 
@@ -137,7 +136,6 @@ class GameBoard:
     @size.setter
     def size(self, size: int) -> None:
         """set self._size to 'int' size if valid"""
-        validate_int(size)
         GameBoard.validate_size(size)
 
         self._size = size
@@ -146,7 +144,7 @@ class GameBoard:
     def validate_size(cls, size: int) -> None:
         """raise error if size not within min/max class const"""
         if not cls.MIN_SIZE <= size <= cls.MAX_SIZE:
-            raise ValueError(error_message("5", cls.MIN_SIZE, cls.MAX_SIZE))
+            raise ValueError(error_message("1", cls.MIN_SIZE, cls.MAX_SIZE))
 
 
     @property
@@ -155,6 +153,7 @@ class GameBoard:
     @box.setter
     def box(self, box_size: int) -> None:
         """set self._box to 'int' box_size if valid"""
-        validate_positive_int(box_size)
+        if box_size < 1:
+            raise ValueError(error_message("3", "box_size"))
 
         self._box = box_size
