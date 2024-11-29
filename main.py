@@ -9,6 +9,8 @@ from helpers.tic_tac_toe_board import TicTacToeBoard
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit
 
+from pyfiglet import Figlet
+
 
 # for values displayed to the user
 DISPLAY_MIN_RANGE: int = 1
@@ -19,8 +21,10 @@ MAX_RANGE: int = 0
 
 
 def main() -> None:
+    """tic tac toe game creation and game loop"""
+    print_logo()
+
     try:
-        """tic tac toe game creation and game loop"""
         players = get_players()
         board_size = get_board_size()
         difficulty = get_difficulty(players)
@@ -33,6 +37,11 @@ def main() -> None:
         print("")
     finally:
         exit_message()
+
+def print_logo():
+    f = Figlet(font='standard', width=100)
+
+    print(f.renderText("Infinite Tic Tac Toe"))
 
 
 def get_players() -> int:

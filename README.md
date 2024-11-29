@@ -1,30 +1,31 @@
 <a id='top'></a>
 
-# "Infinite" TicTacToe
+# <img src='static/5x5_gameboard.png' alt='3x3 tic tac toe game board' width='150'><img src='static/logo.png' alt='3x3 tic tac toe game board' width='600'>
 
 <a id='table_of_contents'></a>
 
-<details open>
-<summary>Table of Contents</summary>
+## <img src='static/table_of_contents.png' alt='3x3 tic tac toe game board' width='450'> 
 
-## Table of Contents
-1. [About The Project](#about_the_project)
+<details open>
+<summary>📚 Table of Contents</summary>
+
+1. [📖 About The Project](#about_the_project)
     - [Summary](#summary)
     - [Intentions](#intentions)
-2. [Play Modes](#play_modes)
+2. [🎮 Play Modes](#play_modes)
     - [2x Player](#2x_player)
     - [Easy Mode](#easy_mode)
     - [Hard Mode](#hard_mode)
-3. [Built With](#built_with)
-4. [Getting Started](#getting_started)
+3. [🔧 Built With](#built_with)
+4. [❔ Getting Started](#getting_started)
     - [Prerequisites](#prerequisites)
     <!-- - [Installation](#installation) -->
-5. [Contact](#contact)
+5. [📧 Contact](#contact)
 </details>
 
 <a id='about_the_project'></a>
 
-## About The Project
+## <img src='static/about_the_project.png' alt='3x3 tic tac toe game board' width='480'>
 <a id='summary'></a>
 
 ### Summary:
@@ -49,23 +50,22 @@ This program creates an "infinate" tic tac toe game. The program has been made s
 
 <a id='play_modes'></a>
 
-## Play modes
-
+## <img src='static/play_modes.png' alt='3x3 tic tac toe game board' width='300'>
 <a id='2x_player'></a>
 
-### 2x player
+### 👥 2x player
 Two player mode where the players can play against each other on a board of their chosen size
 
 <a id='easy_mode'></a>
 
-### Easy mode
+### 👤🖥️🎯 Easy mode
 Against the computer: In most cases the user should win...
 
 The computer will place it's token at a random valid board location
 
 <a id='hard_mode'></a>
 
-### Hard mode
+### 👤🖥️⚔️ Hard mode
 
 Against the computer: In most cases hard mode should result in a stalemate...
 
@@ -81,13 +81,14 @@ The computer will follow an order of operation, for the size of the board for ea
 
 <a id='built_with'></a>
 
-### Built with
-- Python
-- Visual Studio Code
+## <img src='static/built_with.png' alt='3x3 tic tac toe game board' width='275'>
+- 🐍 Python
+    - <a href= 'https://pypi.org/project/pyfiglet/'>Pyfiglet</a> for README.md text and game logo
+- 💠 Visual Studio Code
 
 <a id='getting_started'></a>
 
-## Getting Started
+## <img src='static/getting_started.png' alt='3x3 tic tac toe game board' width='400'>
 
 <a id='prerequisites'></a>
 
@@ -103,7 +104,7 @@ The computer will follow an order of operation, for the size of the board for ea
 
 <a id='contact'></a>
 
-## Contact
+## <img src='static/contact.png' alt='3x3 tic tac toe game board' width='220'>
 
 ###  Creator: Rachael Lampard-France
 
