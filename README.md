@@ -76,8 +76,7 @@ The computer will follow an order of operation, for the size of the board for ea
 
 > *(Hard mode does not increase the game board size)*
 
-<img src='static/10x10_gameboard.png' alt='10x10 tic tac toe game board' width='300'>
-<img src='static/3x3_gameboard.png' alt='3x3 tic tac toe game board' width='100'>
+<img src='static/10x10_gameboard.png' alt='10x10 tic tac toe game board' width='300'><img src='static/3x3_gameboard.png' alt='3x3 tic tac toe game board' width='100'>
 
 <a id='built_with'></a>
 
