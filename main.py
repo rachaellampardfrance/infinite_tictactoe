@@ -41,8 +41,8 @@ def main() -> None:
 def print_welcome_message():
     f = Figlet(font='standard', width=100)
 
-    print(f.renderText("Infinite Tic Tac Toe"))
-    print("'ctrl + C' to exit game at any time...\n")
+    print(f.renderText(user_message("5")))
+    print(user_message("4"))
 
 
 def get_players() -> int:
@@ -116,7 +116,7 @@ def set_tokens(players: int) -> object:
 def get_difficulty(players: int) -> str | None:
     if players == 1:
         while True:
-            difficulty = input("Choose difficulty easy/hard: ").strip().lower()
+            difficulty = input(user_message("9")).strip().lower()
             if difficulty in ['e', 'easy']:
                 return 'easy'
             elif difficulty in ['h', 'hard']:
@@ -204,10 +204,11 @@ def validate_user_digit_input(item: str):
 
 
 def convert_user_input(choice: dict) -> dict:
-    """convert user choices from str to int
+    """convert user choices from str to int and invert user
+    row for assigning to nested array game board list
     
     :returns: dict with 'row', 'column' keys and 'int' values"""
-    choice["row"] = int(choice["row"]) - 1
+    choice["row"] = DISPLAY_MAX_RANGE - int(choice["row"])
     choice["column"] = int(choice["column"]) - 1
     return choice
 

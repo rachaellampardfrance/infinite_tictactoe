@@ -20,11 +20,14 @@ USER_MESSAGES = {
     "1": "Choose {} or {}: ",
     "2": "{} select row location {}-{}: ",
     "3": "{} select column location {}-{}: ",
-    "4": "*__Insert message__*",
-    "5": "*__Insert message__*",
+    "4": "'ctrl + C' to exit game at any time...\n\
+Input column and row like you would \
+x, y coordinates for a graph.\n",
+    "5": "Infinite Tic Tac Toe",
     "6": "Closing...",
     "7": "2 player or play against the computer? 2P / C : ",
     "8": "Choose board size {}-{}: ",
+    "9": "Choose difficulty easy/hard: ",
 }
 
 def user_message(message_code: str, *details: any) -> str:
