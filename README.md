@@ -1,10 +1,10 @@
 <a id='top'></a>
 
-# <img src='static/5x5_gameboard.png' alt='3x3 tic tac toe game board' width='150'><img src='static/logo.png' alt='3x3 tic tac toe game board' width='600'>
+# <img src='static/5x5_gameboard.png' alt='5x5 game board' width='150'><img src='static/logo.png' alt='Tic Tac Toe logo' width='600'>
 
 <a id='table_of_contents'></a>
 
-## <img src='static/table_of_contents.png' alt='3x3 tic tac toe game board' width='450'> 
+## <img src='static/table_of_contents.png' alt='Table of contents' width='450'> 
 
 <details open>
 <summary>📚 Table of Contents</summary>
@@ -16,6 +16,7 @@
     - [👥 2x Player](#2x_player)
     - [👤🎯 Easy Mode](#easy_mode)
     - [👤⚔️ Hard Mode](#hard_mode)
+3. [👾 How to Play?](#how_to_play)
 3. [🔧 Built With](#built_with)
 4. [❔ Getting Started](#getting_started)
     - [Prerequisites](#prerequisites)
@@ -25,7 +26,7 @@
 
 <a id='about_the_project'></a>
 
-## <img src='static/about_the_project.png' alt='3x3 tic tac toe game board' width='480'>
+## <img src='static/about_the_project.png' alt='About the project' width='480'>
 <a id='summary'></a>
 
 ### Summary:
@@ -55,7 +56,7 @@ I started with a simple Tic Tac Toe project and wanted to try to automate all of
 
 <a id='play_modes'></a>
 
-## <img src='static/play_modes.png' alt='3x3 tic tac toe game board' width='300'>
+## <img src='static/play_modes.png' alt='Play modes' width='300'>
 <a id='2x_player'></a>
 
 ### 👥 2x player
@@ -91,27 +92,34 @@ The computer will adhere to the following order of operation:
  - Generate all arguments for each: row, column, and both diagonals
    - first for the best win/progress move
    - then for the best player prevention move
- <img src='static\generate_computer_priorities.png' alt='10x10 tic tac toe game board' width='600'>
+ <img src='static\generate_computer_priorities.png' alt='Generate computer priorities' width='600'>
 
 **run all generated priority arguments on the consideration function in order...**
 - Pass in the generated priority arguments into the consider function
     - if any of the priority requirements are met the function will return a placement location
-<img src='static\run_computer_priorities.png' alt='10x10 tic tac toe game board' width='400'>
+<img src='static\run_computer_priorities.png' alt='Run computer priorities' width='400'>
 
 > NOTE: *play modes do not affect the game board size, this is an additional feature*
+<a id='how_to_play'></a>
 
+## <img src='static/how_to_play.png' alt='How to play?' width='350'>
+
+### Game example:
+<img src='static/game_input_example.png' alt='Game input example' width='500'>
+
+### Board size examples:
 <img src='static/10x10_gameboard.png' alt='10x10 tic tac toe game board' width='300'><img src='static/3x3_gameboard.png' alt='3x3 tic tac toe game board' width='100'>
 
 <a id='built_with'></a>
 
-## <img src='static/built_with.png' alt='3x3 tic tac toe game board' width='275'>
+## <img src='static/built_with.png' alt='Built with' width='275'>
 - 🐍 Python
     - <a href= 'https://pypi.org/project/pyfiglet/'>Pyfiglet</a> for README.md text and game logo
 - 💠 Visual Studio Code
 
 <a id='getting_started'></a>
 
-## <img src='static/getting_started.png' alt='3x3 tic tac toe game board' width='400'>
+## <img src='static/getting_started.png' alt='Getting started' width='400'>
 
 <a id='prerequisites'></a>
 
@@ -127,7 +135,7 @@ The computer will adhere to the following order of operation:
 
 <a id='contact'></a>
 
-## <img src='static/contact.png' alt='3x3 tic tac toe game board' width='220'>
+## <img src='static/contact.png' alt='Contact' width='220'>
 
 ###  Creator: Rachael Lampard-France
 
