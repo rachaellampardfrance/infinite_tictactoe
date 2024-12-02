@@ -22,7 +22,7 @@ MAX_RANGE: int = 0
 
 def main() -> None:
     """tic tac toe game creation and game loop"""
-    print_logo()
+    print_welcome_message()
 
     try:
         players = get_players()
@@ -38,10 +38,11 @@ def main() -> None:
     finally:
         exit_message()
 
-def print_logo():
+def print_welcome_message():
     f = Figlet(font='standard', width=100)
 
     print(f.renderText("Infinite Tic Tac Toe"))
+    print("'ctrl + C' to exit game at any time...\n")
 
 
 def get_players() -> int:
@@ -142,8 +143,7 @@ def game_loop(board: object, tokens: object, players: int, difficulty: str) -> N
     """loop turns, printing board, 
     win and stalemate checks, and game on choice"""
     try:
-        game_on: bool = True
-        while game_on:
+        while True:
             board = user_placement(board, tokens.player1_token, "Player 1:")
             print_game(board, tokens)
             board.validate_game_on()
@@ -156,7 +156,6 @@ def game_loop(board: object, tokens: object, players: int, difficulty: str) -> N
 
             print_game(board, tokens)
             board.validate_game_on()
-            game_on = game_on_choice()
 
     except GameEndError as e:
         game_end_error_message(e)
@@ -190,11 +189,11 @@ def get_user_row_column(user: str) -> dict:
     """get user row and column placement choice
     
     :returns: dict with 'row', 'column' keys and 'str' values"""
-    row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
-    validate_user_digit_input(row)
-
     column: str = input(user_message("3", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
     validate_user_digit_input(column)
+
+    row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
+    validate_user_digit_input(row)
 
     return {"row": row, "column": column}
 
@@ -244,29 +243,6 @@ def computer_turn(board: object, tokens: object, difficulty: str = 'easy') -> ob
         except ValueError:
             # print(f"computer failed to place")
             pass
-
-
-def game_on_choice() -> bool:
-    """check if user wants to continue playing
-    
-    :returns: True if users wishes to continue, False if not"""
-    while True:
-        choice: str = input(user_message("4")).strip().upper()
-        try:
-            validate_game_on_choice(choice)
-            if choice == "Y":
-                return True
-            return False
-
-        except ValueError as e:
-            show_message(e)
-
-
-def validate_game_on_choice(choice: str) -> None:
-    """raise error if choice is not valid"""
-    valid: list = ['Y', 'N']
-    if not choice in valid:
-        raise ValueError(user_message("5", choice))
 
 
 if __name__ == '__main__':
