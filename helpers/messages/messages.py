@@ -18,8 +18,8 @@ def error_message(message_code: str, *details: any) -> str:
 
 USER_MESSAGES = {
     "1": "Choose {} or {}: ",
-    "2": "{} select row location {}-{}: ",
-    "3": "{} select column location {}-{}: ",
+    "2": "{} select y location {}-{}: ",
+    "3": "{} select x location {}-{}: ",
     "4": "'ctrl + C' to exit game at any time...\n\
 Input column and row like you would \
 x, y coordinates for a graph.\n",

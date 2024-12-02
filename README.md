@@ -92,12 +92,14 @@ The computer will adhere to the following order of operation:
  - Generate all arguments for each: row, column, and both diagonals
    - first for the best win/progress move
    - then for the best player prevention move
- <img src='static\generate_computer_priorities.png' alt='Generate computer priorities' width='600'>
+
+<p align="center"><img src='static\generate_computer_priorities.png' alt='Generate computer priorities' width='600'></p>
 
 **run all generated priority arguments on the consideration function in order...**
 - Pass in the generated priority arguments into the consider function
     - if any of the priority requirements are met the function will return a placement location
-<img src='static\run_computer_priorities.png' alt='Run computer priorities' width='400'>
+
+<p align="center"><img src='static\run_computer_priorities.png' alt='Run computer priorities' width='400'></p>
 
 > NOTE: *play modes do not affect the game board size, this is an additional feature*
 <a id='how_to_play'></a>
@@ -105,10 +107,19 @@ The computer will adhere to the following order of operation:
 ## <img src='static/how_to_play.png' alt='How to play?' width='350'>
 
 ### Game example:
+---
+---
+<p align="center">
 <img src='static/game_input_example.png' alt='Game input example' width='500'>
+</p>
+
+---
+---
 
 ### Board size examples:
-<img src='static/10x10_gameboard.png' alt='10x10 tic tac toe game board' width='300'><img src='static/3x3_gameboard.png' alt='3x3 tic tac toe game board' width='100'>
+<p align="center">
+<img src='static/10x10_gameboard.png' alt='10x10 tic tac toe game board' width='300'><img src='static/5x5_gameboard.png' alt='5x5 game board' width='157'><img src='static/3x3_gameboard.png' alt='3x3 tic tac toe game board' width='98'>
+</p>
 
 <a id='built_with'></a>
 
