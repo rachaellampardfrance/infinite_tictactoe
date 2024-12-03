@@ -9,6 +9,8 @@ from helpers.tic_tac_toe_board import TicTacToeBoard
 from helpers.tokens import Tokens
 from helpers.validation import validate_digit
 
+from pyfiglet import Figlet
+
 
 # for values displayed to the user
 DISPLAY_MIN_RANGE: int = 1
@@ -19,8 +21,10 @@ MAX_RANGE: int = 0
 
 
 def main() -> None:
+    """tic tac toe game creation and game loop"""
+    print_welcome_message()
+
     try:
-        """tic tac toe game creation and game loop"""
         players = get_players()
         board_size = get_board_size()
         difficulty = get_difficulty(players)
@@ -33,6 +37,12 @@ def main() -> None:
         print("")
     finally:
         exit_message()
+
+def print_welcome_message():
+    f = Figlet(font='standard', width=100)
+
+    print(f.renderText(user_message("5")))
+    print(user_message("4"))
 
 
 def get_players() -> int:
@@ -106,7 +116,7 @@ def set_tokens(players: int) -> object:
 def get_difficulty(players: int) -> str | None:
     if players == 1:
         while True:
-            difficulty = input("Choose difficulty easy/hard: ").strip().lower()
+            difficulty = input(user_message("9")).strip().lower()
             if difficulty in ['e', 'easy']:
                 return 'easy'
             elif difficulty in ['h', 'hard']:
@@ -133,8 +143,7 @@ def game_loop(board: object, tokens: object, players: int, difficulty: str) -> N
     """loop turns, printing board, 
     win and stalemate checks, and game on choice"""
     try:
-        game_on: bool = True
-        while game_on:
+        while True:
             board = user_placement(board, tokens.player1_token, "Player 1:")
             print_game(board, tokens)
             board.validate_game_on()
@@ -147,7 +156,6 @@ def game_loop(board: object, tokens: object, players: int, difficulty: str) -> N
 
             print_game(board, tokens)
             board.validate_game_on()
-            game_on = game_on_choice()
 
     except GameEndError as e:
         game_end_error_message(e)
@@ -181,11 +189,11 @@ def get_user_row_column(user: str) -> dict:
     """get user row and column placement choice
     
     :returns: dict with 'row', 'column' keys and 'str' values"""
-    row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
-    validate_user_digit_input(row)
-
     column: str = input(user_message("3", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
     validate_user_digit_input(column)
+
+    row: str = input(user_message("2", user, DISPLAY_MIN_RANGE, DISPLAY_MAX_RANGE)).strip()
+    validate_user_digit_input(row)
 
     return {"row": row, "column": column}
 
@@ -196,10 +204,11 @@ def validate_user_digit_input(item: str):
 
 
 def convert_user_input(choice: dict) -> dict:
-    """convert user choices from str to int
+    """convert user choices from str to int and invert user
+    row for assigning to nested array game board list
     
     :returns: dict with 'row', 'column' keys and 'int' values"""
-    choice["row"] = int(choice["row"]) - 1
+    choice["row"] = DISPLAY_MAX_RANGE - int(choice["row"])
     choice["column"] = int(choice["column"]) - 1
     return choice
 
@@ -235,29 +244,6 @@ def computer_turn(board: object, tokens: object, difficulty: str = 'easy') -> ob
         except ValueError:
             # print(f"computer failed to place")
             pass
-
-
-def game_on_choice() -> bool:
-    """check if user wants to continue playing
-    
-    :returns: True if users wishes to continue, False if not"""
-    while True:
-        choice: str = input(user_message("4")).strip().upper()
-        try:
-            validate_game_on_choice(choice)
-            if choice == "Y":
-                return True
-            return False
-
-        except ValueError as e:
-            show_message(e)
-
-
-def validate_game_on_choice(choice: str) -> None:
-    """raise error if choice is not valid"""
-    valid: list = ['Y', 'N']
-    if not choice in valid:
-        raise ValueError(user_message("5", choice))
 
 
 if __name__ == '__main__':
