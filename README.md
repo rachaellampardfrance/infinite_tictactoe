@@ -19,7 +19,7 @@
 3. [👾 How to Play?](#how_to_play)
 3. [🔧 Built With](#built_with)
 4. [❔ Getting Started](#getting_started)
-    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
     <!-- - [Installation](#installation) -->
 5. [📧 Contact](#contact)
 </details>
@@ -132,7 +132,7 @@ The computer will adhere to the following order of operation:
 
 ## <img src='static/getting_started.png' alt='Getting started' width='400'>
 
-<a id='prerequisites'></a>
+<a id='installation'></a>
 
 ### Installation
 
