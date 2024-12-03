@@ -134,14 +134,19 @@ The computer will adhere to the following order of operation:
 
 <a id='prerequisites'></a>
 
-### Prerequisites
+### Installation
 
 <details open>
-<summary>packages</summary>
+<summary>Installation steps</summary>
 
-[Python](https://www.python.org/downloads/)
+1. Install [Python](https://www.python.org/downloads/)
+    - Download Python3
+2. Fork this repository
+        
+        $git clone https://github.com/rachaellampardfrance/infinite_tictactoe
+3. Install requirements
 
-    Download Python3 
+        $pip install -r requirements.txt
 </details>
 
 <a id='contact'></a>
