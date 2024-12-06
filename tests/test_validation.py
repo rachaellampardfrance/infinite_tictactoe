@@ -2,14 +2,10 @@ from helpers.validation import validate_digit, item_exists
 import pytest
 
 def test_validate_digit():
-    with pytest.raises(ValueError, match="Input must be a digit"):
-        validate_digit('a')
-    with pytest.raises(ValueError, match="Input must be a digit"):
-        validate_digit('!')
-    with pytest.raises(ValueError, match="Input must be a digit"):
-        validate_digit('1as')
-    with pytest.raises(ValueError, match="Input must be a digit"):
-        validate_digit('')
+    checks = ['a', '!', '1as', '']
+    for check in checks:
+        with pytest.raises(ValueError, match="Input must be a digit"):
+            validate_digit(check)
     
 def test_validate_digit_raises_no_exception():
     try:

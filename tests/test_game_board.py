@@ -75,14 +75,10 @@ def test_size():
 
 
     # size only accepts 'int' type
-    with pytest.raises(TypeError):
-        game_board = GameBoard('a')
-    with pytest.raises(TypeError):
-        game_board = GameBoard({})
-    with pytest.raises(TypeError):
-        game_board = GameBoard([])
-    with pytest.raises(TypeError):
-        game_board = GameBoard(())
+    checks = [[], {}, "", ()]
+    for check in checks:
+        with pytest.raises(TypeError):
+            game_board = GameBoard(check)
 
 
 def test_validate_board_location():
